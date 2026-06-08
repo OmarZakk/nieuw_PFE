@@ -9,6 +9,7 @@ csl: apa.csl
 ---
 penis cancer test test
 # Set-up your environment
+شه زود يا ابا الفاضل
 
 ```{r package_install, include=FALSE}
 install.packages("tidyverse")
@@ -47,112 +48,228 @@ Include the following:
 -   ...
 
 # Part 2 - Data Sourcing
-
 ## 2.1 Load in the data
-
 Preferably from a URL, but if not, make sure to download the data and store it in a shared location that you can load the data in from. Do not store the data in a folder you include in the Github repository!
-
 ```{r loading_data}
-dataset <- midwest
+library(tidyverse)
+library(readxl)
+
+# Each teammate sets their own path to the shared download location (NOT in the repo)
+data_path <- "C:/Users/Gebruiker/Downloads/"
+
+savings_raw   <- read_xlsx(file.path(data_path, "nasa_10_ki$defaultview_spreadsheet.xlsx"), skip = 9)
+inflation_raw <- read_xlsx(file.path(data_path, "prc_hicp_ainr$defaultview_spreadsheet.xlsx"), skip = 9)
 ```
-
-midwest is an example dataset included in the tidyverse package
-
 ## 2.2 Provide a short summary of the dataset(s)
-
-```{r}
-head(dataset)
+```{r summary}
+head(savings_raw)
+head(inflation_raw)
 ```
-
-In this case we see 28 variables, but we miss some information on what units they are in. We also don't know anything about the year/moment in which this data has been captured.
-
-``` r
-inline_code = TRUE
-```
-
-These are things that are usually included in the metadata of the dataset. For your project, you need to provide us with the information from your metadata that we need to understand your dataset of choice.
-
+#write here about the metadata: source (Eurostat nasa_10_ki for saving rate, prc_hicp_ainr for inflation), units (saving rate = % of gross disposable income; inflation = HICP annual average index 2025=100, from which we compute annual % change), time coverage 2016-2025, unit of observation = country-year xyz
 ## 2.3 Describe the type of variables included
-
 Think of things like:
-
 -   Do the variables contain health information or SES information?
-
 -   Have they been measured by interviewing individuals or is the data coming from administrative sources?
-
-*For the sake of this example, I will continue with the assignment...*
-
+#write here about variable types: both are macroeconomic / SES indicators from administrative national accounts data (ESA 2010), not survey/interview data; saving rate and inflation are ratio-level numeric variables; country is a nominal factor; development status is a derived ordinal/categorical variable xyz
 # Part 3 - Quantifying
-
 ## 3.1 Data cleaning
-
 Say we want to include only larger distances (above 2) in our dataset, we can filter for this.
+```{r data_cleaning_build}
+year <- c(2018, 2019, 2020, 2021, 2022, 2023, 2024)
 
-```{r data_cleaning}
-mean(dataset$percollege)
+savings <- data.frame(
+  year        = year,
+  Germany     = c(18.24, 17.89, 23.34, 21.96, 18.82, 19.10, 19.93),
+  Netherlands = c(13.90, 16.21, 22.41, 19.39, 14.76, 15.01, 16.83),
+  Poland      = c( 6.01,  7.18, 13.59,  6.22,  2.16,  6.01,  9.04),
+  Romania     = c(-11.06, -2.08,  1.97, -1.69, -7.58, -2.58,  0.05)
+)
+
+inflation <- data.frame(
+  year        = year,
+  Germany     = c(1.91, 1.38, 0.36, 3.20,  8.67,  6.02, 2.49),
+  Netherlands = c(1.59, 2.68, 1.12, 2.82, 11.64,  4.09, 3.22),
+  Poland      = c(1.17, 2.16, 3.64, 5.23, 13.20, 10.84, 3.66),
+  Romania     = c(4.08, 3.91, 2.32, 4.11, 12.02,  9.75, 5.84)
+)
 ```
-
 Please use a separate 'R block' of code for each type of cleaning. So, e.g. one for missing values, a new one for removing unnecessary variables etc.
+```{r data_cleaning_reshape}
+savings_long   <- pivot_longer(savings,   -year, names_to = "country", values_to = "saving_rate")
+inflation_long <- pivot_longer(inflation, -year, names_to = "country", values_to = "inflation_rate")
 
+combined <- left_join(savings_long, inflation_long, by = c("year", "country"))
+```
+```{r data_cleaning_missing}
+sum(is.na(combined))
+combined <- combined %>% drop_na()
+```
 ## 3.2 Generate necessary variables
-
 Variable 1
-
 ```{r gen_var1}
-
+combined <- combined %>%
+  mutate(development = ifelse(country %in% c("Germany", "Netherlands"),
+                              "Developed (Western EU)",
+                              "Developing (Eastern EU)"))
 ```
-
 Variable 2
-
 ```{r gen_var2}
+combined <- combined %>%
+  mutate(period = case_when(
+    year <  2020 ~ "Pre-COVID",
+    year == 2020 ~ "COVID shock",
+    year >  2020 ~ "Post-COVID"
+  ))
 
+combined$country     <- factor(combined$country,
+                               levels = c("Germany", "Netherlands", "Poland", "Romania"))
+combined$development <- factor(combined$development)
+combined$period      <- factor(combined$period,
+                               levels = c("Pre-COVID", "COVID shock", "Post-COVID"))
 ```
-
 ## 3.3 Visualize temporal variation
+```{r temporal_plot}
+country_colors <- c(
+  "Germany"     = "#2C5F8A",
+  "Netherlands" = "#4AA8D8",
+  "Poland"      = "#E07B39",
+  "Romania"     = "#C0392B"
+)
 
-```{r}
-
-```
-
-## 3.4 Visualize spatial variation
-
-```{r visualise_map}
-
-```
-
-Here you provide a description of why the plot above is relevant to your specific social problem.
-
-## 3.5 Visualize sub-population variation
-
-What is the poverty rate by state?
-
-```{r visualise_subpopulations}
-dataset$inmetro <- dataset$inmetro %>% as.factor()
-# Boxplot of poverty rate by state using the 'midwest' dataset
-ggplot(dataset, aes(x = inmetro, y = percadultpoverty)) +
-  geom_boxplot() +
+ggplot(combined, aes(x = year, y = saving_rate, color = country, linetype = development)) +
+  annotate("rect", xmin = 2019.5, xmax = 2020.5,
+           ymin = -Inf, ymax = Inf, fill = "red", alpha = 0.08) +
+  geom_vline(xintercept = 2020, linetype = "dashed", color = "red", linewidth = 0.7) +
+  annotate("text", x = 2020.1, y = -10, label = "COVID-19 (2020)",
+           color = "red", size = 3.2, hjust = 0) +
+  geom_hline(yintercept = 0, color = "grey40", linewidth = 0.4, linetype = "dotted") +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.5) +
+  scale_color_manual(values = country_colors, name = "Country") +
+  scale_linetype_manual(values = c("Developed (Western EU)" = "solid",
+                                   "Developing (Eastern EU)" = "dashed"),
+                        name = "Development status") +
   labs(
-    title = "Distribution of Poverty Rates by Metropolitan status (Midwest counties)",
-    x = "Metropolitan Area",
-    y = "Poverty Rate of Adults (%)"
+    title    = "Gross Household Saving Rate by Country (2018-2024)",
+    subtitle = "Developed vs. developing EU economies | Source: Eurostat (nasa_10_ki)",
+    x        = "Year",
+    y        = "Gross saving rate (% of disposable income)",
+    caption  = "Note: Provisional data for 2023-2024. Dashed line = COVID-19 shock year."
   ) +
-  theme_minimal() +
+  theme_classic(base_size = 12) +
   theme(
+    plot.title    = element_text(face = "bold", size = 13),
+    plot.subtitle = element_text(color = "grey40", size = 10),
+    plot.caption  = element_text(color = "grey50", size = 8, hjust = 0),
+    legend.position = "bottom"
+  ) +
+  scale_x_continuous(breaks = 2018:2024)
+```
+#write here about why the temporal plot matters: COVID savings spike visible in all four countries in 2020, sharper in developed economies, then a sharp drop in 2022 as inflation eroded disposable income xyz
+## 3.4 Visualize spatial variation
+```{r visualise_map}
+library(maps)
+
+eu_map <- map_data("world", region = c("Germany", "Netherlands", "Poland", "Romania"))
+
+savings_2024 <- combined %>%
+  filter(year == 2024) %>%
+  mutate(region = as.character(country))
+
+map_data_joined <- left_join(eu_map, savings_2024, by = "region")
+
+ggplot(map_data_joined, aes(x = long, y = lat, group = group, fill = saving_rate)) +
+  geom_polygon(color = "white", linewidth = 0.3) +
+  coord_map() +
+  scale_fill_gradient2(low = "#C0392B", mid = "#F4E04D", high = "#2C5F8A",
+                       midpoint = 10, name = "Saving rate (%)") +
+  labs(
+    title    = "Gross Household Saving Rate by Country (2024)",
+    subtitle = "Spatial comparison across selected EU economies | Source: Eurostat (nasa_10_ki)",
+    x        = NULL, y = NULL
+  ) +
+  theme_void(base_size = 12) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 13),
+    plot.subtitle = element_text(color = "grey40", size = 10),
     legend.position = "right"
   )
 ```
-
-Here you provide a description of why the plot above is relevant to your specific social problem.
-
-## 3.6 Event analysis
-
-Analyze the relationship between two variables.
-
-```{r analysis}
-
+#write here about why the spatial plot matters: clear west-east gradient in 2024 saving rates, developed western economies (Germany, Netherlands) saving far more than developing eastern ones (Poland, Romania) xyz
+## 3.5 Visualize sub-population variation
+What is the saving rate by development status?
+```{r visualise_subpopulations}
+ggplot(combined, aes(x = development, y = saving_rate, fill = development)) +
+  geom_boxplot(alpha = 0.7) +
+  geom_jitter(aes(color = country), width = 0.15, size = 2) +
+  scale_fill_manual(values = c("Developed (Western EU)" = "#2C5F8A",
+                               "Developing (Eastern EU)" = "#E07B39"),
+                    guide = "none") +
+  scale_color_manual(values = country_colors, name = "Country") +
+  labs(
+    title = "Distribution of Saving Rates by Development Status (2018-2024)",
+    x     = "Development category",
+    y     = "Gross saving rate (%)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 13),
+    legend.position = "right"
+  )
 ```
+#write here about why the sub-population plot matters: developed economies cluster at consistently high, positive saving rates; developing economies spread much lower and dip into negative territory (dissaving) xyz
+## 3.6 Event analysis
+Analyze the relationship between two variables.
+```{r analysis}
+scale_factor <- 2
 
-Here you provide a description of why the plot above is relevant to your specific social problem.
+strip_labels <- c(
+  "Germany"     = "Germany - Developed (Western EU)",
+  "Netherlands" = "Netherlands - Developed (Western EU)",
+  "Poland"      = "Poland - Developing (Eastern EU)",
+  "Romania"     = "Romania - Developing (Eastern EU)"
+)
+
+ggplot(combined, aes(x = year)) +
+  annotate("rect", xmin = 2019.5, xmax = 2020.5,
+           ymin = -Inf, ymax = Inf, fill = "red", alpha = 0.07) +
+  geom_vline(xintercept = 2020, linetype = "dashed", color = "red", linewidth = 0.6) +
+  geom_hline(yintercept = 0, color = "grey60", linewidth = 0.3, linetype = "dotted") +
+  geom_line(aes(y = saving_rate, color = country), linewidth = 1.1) +
+  geom_point(aes(y = saving_rate, color = country), size = 2.5) +
+  geom_line(aes(y = inflation_rate * scale_factor, color = country),
+            linewidth = 1.1, linetype = "dotted") +
+  geom_point(aes(y = inflation_rate * scale_factor, color = country),
+             size = 2.5, shape = 17) +
+  scale_y_continuous(
+    name = "Gross saving rate (% of disposable income)",
+    sec.axis = sec_axis(~ . / scale_factor,
+                        name = "HICP inflation rate (% annual change)")
+  ) +
+  scale_color_manual(values = country_colors, guide = "none") +
+  scale_x_continuous(breaks = 2018:2024) +
+  facet_wrap(~ country, ncol = 2, labeller = labeller(country = strip_labels)) +
+  labs(
+    title    = "Household Saving Rate and Inflation by Country (2018-2024)",
+    subtitle = "Solid line = saving rate (left axis) | Dotted line, triangle = HICP inflation (right axis)",
+    x        = "Year",
+    caption  = "Sources: Eurostat nasa_10_ki (saving rate); Eurostat prc_hicp_ainr (HICP inflation).\nDashed red line = COVID-19 shock (2020). Provisional data for 2023-2024."
+  ) +
+  theme_classic(base_size = 12) +
+  theme(
+    plot.title         = element_text(face = "bold", size = 13),
+    plot.subtitle      = element_text(color = "grey40", size = 9),
+    plot.caption       = element_text(color = "grey50", size = 8, hjust = 0),
+    axis.title.y.left  = element_text(color = "black", size = 10),
+    axis.title.y.right = element_text(color = "grey40", size = 10),
+    strip.background   = element_rect(fill = "grey95", color = "grey80"),
+    strip.text         = element_text(face = "bold", size = 10),
+    panel.spacing      = unit(1.2, "lines")
+  )
+```
+#write here about why the event analysis matters: the inverse relationship between the 2022 inflation spike and the collapse in saving rates, especially severe in developing economies (Poland, Romania) where inflation hit hardest and savings turned negative xyz holy yap
+
+
 
 # Part 4 - Discussion
 
