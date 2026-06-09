@@ -1,6 +1,14 @@
 ---
 title: "Template"
+<<<<<<< HEAD
 author: "Omar Zakkouralashy (2889420), Anna Mishmish-Olaru (2881939), Abhigyan Hazarika (student number), Andrea Tzima or Xhima,Raluca Naumcef(2888853), kyle"
+=======
+<<<<<<< HEAD
+author: "Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (student number), Andrea Tzima or Xhima,Raluca Naumcef, kyle"
+=======
+author: "Omar Zakkouralashy (2889420), Anna Mishmish-Olaru (2881939), Abhigyan Hazarika (student number), Andrea Tzima or Xhima (2885530),Raluca Naumcef, kyle"
+>>>>>>> d0097343dd07037992a3f4c54a811f9a9756b238
+>>>>>>> a66092d3728bb9fa977f156a6f3c809c2eb7c25b
 date: "`r Sys.Date()`"
 output: pdf_document
 bibliography: references.bib
@@ -28,16 +36,19 @@ require()
 ```
 
 # Title Page
-A new sentence
-Include your names
+The effect of COVID on household savings in the European Union - A social problem.
 
-Include the tutorial group number
+Omar, Anna, Abhigyan, Raluca, Andrea, Kyle
 
-Include your tutorial lecturer's name
+TG 5 - G 1
+
+Tutorial teacher: Simon 
+
+Simon Loop
 
 # Part 1 - Identify a Social Problem
 
-Use APA referencing throughout your document. [Here's a link to some explanation.](https://www.mendeley.com/guides/apa-citation-guide/)
+
 
 ## 1.1 Describe the Social Problem
 
@@ -52,58 +63,19 @@ Include the following:
 
 ```{r loading_data}
 library(maps)
+library(eurostat)
 
-savings_clean <- data.frame(
-  region = c("Belgium","Bulgaria","Czech Republic","Denmark","Germany",
-             "Estonia","Ireland","Greece","Spain","France","Croatia",
-             "Italy","Cyprus","Latvia","Lithuania","Luxembourg","Hungary",
-             "Malta","Netherlands","Austria","Poland","Portugal","Romania",
-             "Slovenia","Slovakia","Finland","Sweden","Norway","Switzerland","Serbia"),
-  `2019` = c(12.26, 0.23, 11.85, 7.89, 17.89, 10.32, 13.66, -1.32, 8.66,
-             14.62, 9.25, 10.52, 6.47, 8.65, 1.61, 15.48, 16.09, 13.26,
-             16.21, 13.23, 7.18, 6.89, -2.08, 13.83, 9.95, 10.60, 17.03,
-             13.44, 22.11, 2.88),
-  `2020` = c(19.25, -0.49, 18.83, 8.98, 23.34, 13.22, 26.15, 1.76, 17.77,
-             20.43, 13.82, 17.86, 13.80, 13.94, 11.70, 26.92, 16.08, 24.69,
-             22.41, 19.32, 13.59, 11.84, 1.97, 22.88, 11.71, 14.05, 17.61,
-             19.46, 26.60, 9.68),
-  `2021` = c(16.80, -5.46, 19.78, 6.43, 21.96, 8.51, 21.63, 5.61, 14.29,
-             19.07, 12.74, 15.87, 15.10, 10.46, 10.14, 18.74, 18.49, 23.15,
-             19.39, 17.23, 6.22, 10.62, -1.69, 16.98, 11.32, 12.06, 17.53,
-             19.35, 26.09, 9.64),
-  `2022` = c(13.01, -6.40, 18.47, 10.91, 18.82, 2.00, 14.62, -3.93, 8.95,
-             16.86, 7.81, 11.44, 5.55, 3.63, 4.48, 13.48, 15.97, 19.47,
-             14.76, 15.27, 2.16, 6.86, -7.58, 14.19, 5.92, 9.88, 15.75,
-             11.41, 22.73, 6.36),
-  check.names = FALSE
-)
-
-savings_long <- savings_clean %>%
-  pivot_longer(-region, names_to = "year", values_to = "saving_rate") %>%
-  mutate(
-    year   = as.integer(year),
-    period = case_when(
-      year == 2019 ~ "Pre-COVID (2019)",
-      year == 2020 ~ "COVID shock (2020)",
-      year == 2021 ~ "Post-COVID (2021)",
-      year == 2022 ~ "Post-COVID (2022)"
-    ),
-    period = factor(period, levels = c(
-      "Pre-COVID (2019)",
-      "COVID shock (2020)",
-      "Post-COVID (2021)",
-      "Post-COVID (2022)"
-    ))
-  )
+dat <- get_eurostat("nasa_10_ki")
 ```
 
 ## 2.2 Provide a short summary of the dataset(s)
 
 ```{r summary}
-head(savings_long)
+head(dat)
+str(dat)
 ```
 
-#write here about metadata: source is Eurostat (nasa_10_ki), indicator is gross household saving rate as % of disposable income, time coverage 2019-2022, unit of observation is country-year xyz
+#write here about metadata: source is Eurostat (nasa_10_ki), indicator is gross household saving rate as % of disposable income, time coverage 2016-2025, unit of observation is country-year xyz
 
 ## 2.3 Describe the type of variables included
 
@@ -116,33 +88,100 @@ head(savings_long)
 ## 3.1 Data cleaning
 
 ```{r data_cleaning}
-savings_long <- savings_long %>%
+savings_clean <- dat %>%
+  filter(
+    na_item == "SRG_S14",
+    sector  == "S14",
+    unit    == "PC"
+  ) %>%
+  mutate(year = as.integer(format(TIME_PERIOD, "%Y"))) %>%
+  filter(year %in% c(2019, 2020, 2021, 2022)) %>%
+  select(geo, year, saving_rate = values) %>%
   drop_na(saving_rate)
 ```
 
 ## 3.2 Generate necessary variables
 
 ```{r gen_var1}
-savings_long <- savings_long %>%
-  mutate(development = ifelse(
-    region %in% c("Germany", "Netherlands", "France", "Belgium",
-                  "Austria", "Sweden", "Denmark", "Finland",
-                  "Ireland", "Luxembourg"),
-    "Developed (Western EU)",
-    "Developing (Eastern EU)"
-  ))
+country_names <- c(
+  BE = "Belgium",      BG = "Bulgaria",    CZ = "Czech Republic",
+  DK = "Denmark",      DE = "Germany",     EE = "Estonia",
+  IE = "Ireland",      EL = "Greece",      ES = "Spain",
+  FR = "France",       HR = "Croatia",     IT = "Italy",
+  CY = "Cyprus",       LV = "Latvia",      LT = "Lithuania",
+  LU = "Luxembourg",   HU = "Hungary",     MT = "Malta",
+  NL = "Netherlands",  AT = "Austria",     PL = "Poland",
+  PT = "Portugal",     RO = "Romania",     SI = "Slovenia",
+  SK = "Slovakia",     FI = "Finland",     SE = "Sweden",
+  NO = "Norway",       CH = "Switzerland", RS = "Serbia"
+)
+
+savings_clean <- savings_clean %>%
+  mutate(
+    region = country_names[as.character(geo)],
+    period = case_when(
+      year == 2019 ~ "Pre-COVID (2019)",
+      year == 2020 ~ "COVID shock (2020)",
+      year == 2021 ~ "Post-COVID (2021)",
+      year == 2022 ~ "Post-COVID (2022)"
+    ),
+    period = factor(period, levels = c(
+      "Pre-COVID (2019)",
+      "COVID shock (2020)",
+      "Post-COVID (2021)",
+      "Post-COVID (2022)"
+    ))
+  ) %>%
+  drop_na(region)
 ```
 
 ## 3.3 Visualize temporal variation
 
-#write here about temporal variation xyz
+```{r temporal_plot}
+eu_mean <- dat %>%
+  filter(
+    na_item == "SRG_S14",
+    sector  == "S14",
+    unit    == "PC"
+  ) %>%
+  mutate(year = as.integer(format(TIME_PERIOD, "%Y"))) %>%
+  filter(year %in% c(2019, 2020, 2021, 2022)) %>%
+  drop_na(values) %>%
+  group_by(year) %>%
+  summarise(mean_saving_rate = mean(values))
+
+ggplot(eu_mean, aes(x = year, y = mean_saving_rate)) +
+  geom_line(color = "#2C5F8A", linewidth = 1) +
+  geom_point(color = "#2C5F8A", size = 3) +
+  annotate("rect", xmin = 2019.5, xmax = 2020.5,
+           ymin = -Inf, ymax = Inf, fill = "red", alpha = 0.08) +
+  geom_vline(xintercept = 2020, linetype = "dashed",
+             color = "red", linewidth = 0.7) +
+  annotate("text", x = 2020.1, y = 10,
+           label = "COVID-19 (2020)", color = "red",
+           size = 3.2, hjust = 0) +
+  labs(
+    title    = "EU Mean Household Saving Rate (2019-2022)",
+    subtitle = "Source: Eurostat (nasa_10_ki)",
+    x        = "Year",
+    y        = "Mean saving rate (%)"
+  ) +
+  theme_classic(base_size = 12) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 13),
+    plot.subtitle = element_text(color = "grey40", size = 10)
+  ) +
+  scale_x_continuous(breaks = c(2019, 2020, 2021, 2022))
+```
+
+#write here about temporal variation: the EU mean saving rate spiked sharply in 2020 as COVID lockdowns suppressed consumption, then gradually declined as economies reopened and inflation eroded disposable income xyz
 
 ## 3.4 Visualize spatial variation
 
 ```{r visualise_map, fig.width=14, fig.height=10}
 europe_map <- map_data("world")
 
-map_joined <- left_join(europe_map, savings_long, by = "region") %>%
+map_joined <- left_join(europe_map, savings_clean, by = "region") %>%
   filter(!is.na(period))
 
 ggplot(map_joined, aes(x = long, y = lat, group = group, fill = saving_rate)) +
@@ -164,12 +203,25 @@ ggplot(map_joined, aes(x = long, y = lat, group = group, fill = saving_rate)) +
   ) +
   theme_void() +
   theme(
-    plot.title      = element_text(face = "bold", size = 14),
-    plot.subtitle   = element_text(color = "grey40", size = 11),
-    strip.text      = element_text(face = "bold", size = 12),
-    legend.position = "bottom",
+    plot.title       = element_text(face = "bold", size = 14),
+    plot.subtitle    = element_text(color = "grey40", size = 11),
+    strip.text       = element_text(face = "bold", size = 12),
+    legend.position  = "bottom",
     legend.key.width = unit(2, "cm")
   )
+```
+
+#write here about spatial variation: in 2020 the map turns greener across all countries as lockdowns forced saving; by 2022 eastern countries turn red as inflation eroded household income xyz
+
+## 3.5 Visualize sub-population variation
+
+#write here about sub-population variation xyz
+
+## 3.6 Event analysis
+
+#write here about event analysis xyz
+
+#write here about event analysis xyz
 ```
 #write here about spatial variation: in 2020 the whole map turns greener as lockdowns forced saving across all countries; by 2022 eastern countries turn red as inflation eroded household income xyz
 
