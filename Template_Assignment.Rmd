@@ -1,6 +1,6 @@
 ---
 title: "Template"
-author: "Omar Zakkouralashy (2889420), Anna Mishmish-Olaru (2881939), Abhigyan Hazarika (student number), Andrea Tzima or Xhima,Raluca Naumcef, kyle"
+author: "Omar Zakkouralashy (2889420), Anna Mishmish-Olaru (2881939), Abhigyan Hazarika (student number), Andrea Tzima or Xhima,Raluca Naumcef(2888853), kyle"
 date: "`r Sys.Date()`"
 output: pdf_document
 bibliography: references.bib
@@ -14,7 +14,7 @@ csl: apa.csl
 install.packages("tidyverse")
 install.packages("yaml")
 install.packages("rmarkdown")
-
+install.packages("maps")
 ```
 
 ```{r packages}
@@ -24,6 +24,7 @@ require(yaml)
 library(tidyr)
 library(writexl)
 library(readxl)
+require()
 ```
 
 # Title Page
@@ -50,7 +51,6 @@ Include the following:
 ## 2.1 Load in the data
 
 ```{r loading_data}
-library(tidyverse)
 library(maps)
 
 savings_clean <- data.frame(
