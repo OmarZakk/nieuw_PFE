@@ -7,9 +7,8 @@ bibliography: references.bib
 csl: apa.csl
 
 ---
-penis cancer test test
+
 # Set-up your environment
-شه زود يا ابا الفاضل
 
 ```{r package_install, include=FALSE}
 install.packages("tidyverse")
