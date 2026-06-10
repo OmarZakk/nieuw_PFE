@@ -264,7 +264,7 @@ ggplot(eu_mean, aes(x = year, y = mean_saving_rate)) +
   scale_x_continuous(breaks = 2016:2022)
 ```
 
-#write here about temporal variation: the EU27 mean saving rate spiked sharply in 2020 as COVID lockdowns suppressed consumption, then gradually declined as economies reopened and inflation eroded disposable income xyz
+#The saving behaviour of households has changed dramatically. In 2020, the average saving rate of the EU27 shot up as the COVID‑19 lockdowns limited consumption possibilities and increased involuntary savings. Restrictions were lifted in 2021 and the saving rate has gradually declined as spending habits have normalised. Then high inflation ate into real disposable incomes, and households accumulated less savings to support consumption.
 
 ## 3.4 Visualize spatial variation
 
@@ -308,7 +308,7 @@ ggplot(map_joined, aes(x = long, y = lat, group = group, fill = saving_rate)) +
   )
 ```
 
-#write here about spatial variation: in 2020 the map turns greener across all countries as lockdowns forced saving; by 2022 central and eastern countries turn red as inflation eroded household income xyz
+#The spatial variation is also quite telling: For most of the EU27 countries, the map is a lot greener in 2020, reflecting the universal rise in saving as lockdowns curtailed consumption everywhere. By 2022 a clear east-west divide appears, with the central and eastern member states turning red. This reflects steeper declines in saving rates as high inflation more sharply eroded household purchasing power in those economies.
 
 ## 3.5 Visualize sub-population variation
 
@@ -334,7 +334,7 @@ combined %>%
   )
 ```
 
-#write here about sub-population variation: western and northern Europe consistently save more than southern and central/eastern Europe; the COVID shock boosted saving across all groups in 2020 but recovery has been uneven xyz hazafreaky
+#The difference in sub-populations is a structural divide that persists over time with higher saving rates persistently higher in Western and northern Europe and much lower saving rates in southern and central/eastern Europe. The COVID shock of 2020 temporarily closed some of these gaps, with sharp increases in saving rates across all groups while consumption fell sharply. But the post-COVID recovery has been uneven and pre-existing regional differences have re-emerged as countries have been affected by inflation and income pressures to different degrees.
 
 ## 3.6 Event analysis
 
@@ -420,7 +420,7 @@ combined %>%
   )
 ```
 
-#write here about event analysis: saving rates jumped sharply in 2020 during the COVID shock, remained elevated in early recovery, then declined as the 2022 inflation surge eroded disposable income; use the correlation table output above to state whether the relationship between inflation and saving is positive or negative per phase, and note this is correlation not causation xyz ball
+#It can be observed from event analysis that there exists a definite three phase dynamics in the relationship between inflation and saving. The first phase is represented by the occurrence of the COVID shock in 2020 where consumption became difficult for households leading to a situation where people were forced to save. This led to an increase in saving rates while in the second phase, savings declined along with real disposable income due to increased inflation in 2022. Here is how it appears in the correlation table. In the COVID shock phase, there is a positive correlation between inflation and saving which implies that both variables are positively correlated in the given phase. In the inflation phase, the relationship between inflation and saving is negative which implies that saving is negatively correlated with inflation.
 
 
 ## 4.1 Discuss your findings
