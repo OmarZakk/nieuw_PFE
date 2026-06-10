@@ -320,7 +320,7 @@ combined %>%
   )
 ```
 
-#write here about sub-population variation: western and northern Europe consistently save more than southern and central/eastern Europe; the COVID shock boosted saving across all groups in 2020 but recovery has been uneven xyz
+#write here about sub-population variation: western and northern Europe consistently save more than southern and central/eastern Europe; the COVID shock boosted saving across all groups in 2020 but recovery has been uneven xyz hazafreaky
 
 ## 3.6 Event analysis
 
