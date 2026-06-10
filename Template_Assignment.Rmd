@@ -1,9 +1,9 @@
 ---
 title: "Template"
 <<<<<<< HEAD
-author: "Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (student number), Andrea Tzima or Xhima,Raluca Naumcef, kyle"
+author: "Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (2888419), Andrea Tzima or Xhima,Raluca Naumcef, kyle"
 =======
-author: "Omar Zakkouralashy (2889420), Anna Mishmish-Olaru (2881939), Abhigyan Hazarika (student number), Andrea Tzima or Xhima (2885530),Raluca Naumcef, kyle"
+author: "Omar Zakkouralashy (2889420), Anna Mishmish-Olaru (2881939), Abhigyan Hazarika (2888419), Andrea Tzima or Xhima (2885530),Raluca Naumcef, kyle"
 >>>>>>> d0097343dd07037992a3f4c54a811f9a9756b238
 date: "`r Sys.Date()`"
 output: pdf_document
