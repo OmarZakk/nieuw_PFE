@@ -23,6 +23,7 @@ install.packages("tidyverse")
 install.packages("yaml")
 install.packages("rmarkdown")
 install.packages("maps")
+install.packages("eurostat")
 ```
 
 ```{r packages}
@@ -88,12 +89,12 @@ str(dat)
 ## 3.1 Data cleaning
 
 ```{r data_cleaning}
-savings_clean <- dat %>%
+savings_clean <- dat%>%
   filter(
-    na_item == "SRG_S14",
+   na_item == "SRG_S14",
     sector  == "S14",
     unit    == "PC"
-  ) %>%
+   )%>%
   mutate(year = as.integer(format(TIME_PERIOD, "%Y"))) %>%
   filter(year %in% c(2019, 2020, 2021, 2022)) %>%
   select(geo, year, saving_rate = values) %>%
