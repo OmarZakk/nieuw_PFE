@@ -1,12 +1,16 @@
 ---
 title: "Template"
 <<<<<<< HEAD
+<<<<<<< HEAD
 author: "Omar Zakkouralashy (2889420), Anna Mishmish-Olaru (2881939), Abhigyan Hazarika (student number), Andrea Tzima or Xhima,Raluca Naumcef(2888853), kyle"
 =======
 <<<<<<< HEAD
 author: "Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (student number), Andrea Tzima or Xhima,Raluca Naumcef, kyle"
 =======
-author: "Omar Zakkouralashy (2889420), Anna Mishmish-Olaru (2881939), Abhigyan Hazarika (student number), Andrea Tzima or Xhima (2885530),Raluca Naumcef, kyle"
+author: "Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (2888419), Andrea Tzima or Xhima,Raluca Naumcef, Kyle van Emmerik (2897218)"
+>>>>>>> b62ff297222185e7bc4e016fd486e3fee4b2a663
+=======
+author: "Omar Zakkouralashy (2889420), Anna Mishmish-Olaru (2881939), Abhigyan Hazarika (2888419), Andrea Tzima or Xhima (2885530),Raluca Naumcef, Kyle van Emmerik (2897218)"
 >>>>>>> d0097343dd07037992a3f4c54a811f9a9756b238
 >>>>>>> a66092d3728bb9fa977f156a6f3c809c2eb7c25b
 date: "`r Sys.Date()`"
@@ -46,6 +50,7 @@ TG 5 - G 1
 Tutorial teacher: Simon 
 
 Simon Loop
+Simon Loop
 
 # Part 1 - Identify a Social Problem
 
@@ -65,22 +70,36 @@ Include the following:
 ```{r loading_data}
 library(maps)
 library(eurostat)
+library(grid)
 
-dat <- get_eurostat("nasa_10_ki")
+dat_savings   <- get_eurostat("nasa_10_ki",    time_format = "num", cache = TRUE)
+dat_inflation <- get_eurostat("prc_hicp_ainr", time_format = "num", cache = TRUE)
 ```
 
 ## 2.2 Provide a short summary of the dataset(s)
 
 ```{r summary}
-head(dat)
-str(dat)
+dataset_summary <- data.frame(
+  Dataset    = c("nasa_10_ki", "prc_hicp_ainr"),
+  Source     = c("Eurostat", "Eurostat"),
+  Indicator  = c("Gross household saving rate",
+                 "HICP inflation rate"),
+  Unit       = c("% of gross disposable income",
+                 "Annual average % change"),
+  Level      = c("Country-year", "Country-year"),
+  Years_used = c("2016-2022", "2016-2022"),
+  Limitation = c("Country-level only, no household-level detail",
+                 "National average, not household-specific")
+)
+
+dataset_summary
 ```
 
-#write here about metadata: source is Eurostat (nasa_10_ki), indicator is gross household saving rate as % of disposable income, time coverage 2016-2025, unit of observation is country-year xyz
+#write here about metadata: both datasets come from Eurostat; saving rate is sourced from national accounts (ESA 2010) and measures gross household saving as a share of disposable income; inflation comes from HICP price-index data and measures annual average price change across consumer goods and services xyz
 
 ## 2.3 Describe the type of variables included
 
-#write here: saving rate is a numeric ratio-level variable, country is nominal, year is interval; data comes from administrative national accounts (ESA 2010), not surveys xyz
+#write here: saving rate and inflation are ratio-level numeric variables; country is nominal; year is interval; covid_phase and region_group are ordinal/categorical; saving rate data comes from administrative national accounts; inflation comes from HICP price index data, not surveys xyz
 
 ---
 
@@ -88,6 +107,7 @@ str(dat)
 
 ## 3.1 Data cleaning
 
+<<<<<<< HEAD
 ```{r data_cleaning}
 savings_clean <- dat%>%
   filter(
@@ -97,59 +117,133 @@ savings_clean <- dat%>%
    )%>%
   mutate(year = as.integer(format(TIME_PERIOD, "%Y"))) %>%
   filter(year %in% c(2019, 2020, 2021, 2022)) %>%
+=======
+```{r data_cleaning_savings}
+eu27 <- c(
+  "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR",
+  "DE", "EL", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL",
+  "PL", "PT", "RO", "SK", "SI", "ES", "SE"
+)
+
+years_used <- 2016:2022
+
+savings_clean <- dat_savings %>%
+  filter(
+    na_item == "SRG_S14_S15",
+    sector  == "S14_S15",
+    unit    == "PC",
+    geo     %in% eu27
+  ) %>%
+  mutate(year = as.integer(TIME_PERIOD)) %>%
+  filter(year %in% years_used) %>%
+>>>>>>> b62ff297222185e7bc4e016fd486e3fee4b2a663
   select(geo, year, saving_rate = values) %>%
   drop_na(saving_rate)
+```
+
+```{r data_cleaning_inflation}
+inflation_clean <- dat_inflation %>%
+  filter(
+    coicop18 == "AP",
+    unit     == "RCH_A_AVG",
+    geo      %in% eu27
+  ) %>%
+  mutate(year = as.integer(TIME_PERIOD)) %>%
+  filter(year %in% years_used) %>%
+  select(geo, year, inflation_rate = values) %>%
+  drop_na(inflation_rate)
+```
+
+```{r data_cleaning_merge}
+combined <- left_join(savings_clean, inflation_clean, by = c("geo", "year"))
+```
+
+```{r data_cleaning_check}
+combined %>%
+  summarise(
+    countries         = n_distinct(geo),
+    first_year        = min(year),
+    last_year         = max(year),
+    observations      = n(),
+    missing_saving    = sum(is.na(saving_rate)),
+    missing_inflation = sum(is.na(inflation_rate))
+  )
 ```
 
 ## 3.2 Generate necessary variables
 
 ```{r gen_var1}
 country_names <- c(
-  BE = "Belgium",      BG = "Bulgaria",    CZ = "Czech Republic",
-  DK = "Denmark",      DE = "Germany",     EE = "Estonia",
-  IE = "Ireland",      EL = "Greece",      ES = "Spain",
-  FR = "France",       HR = "Croatia",     IT = "Italy",
-  CY = "Cyprus",       LV = "Latvia",      LT = "Lithuania",
-  LU = "Luxembourg",   HU = "Hungary",     MT = "Malta",
-  NL = "Netherlands",  AT = "Austria",     PL = "Poland",
-  PT = "Portugal",     RO = "Romania",     SI = "Slovenia",
-  SK = "Slovakia",     FI = "Finland",     SE = "Sweden",
-  NO = "Norway",       CH = "Switzerland", RS = "Serbia"
+  AT = "Austria",     BE = "Belgium",      BG = "Bulgaria",
+  HR = "Croatia",     CY = "Cyprus",       CZ = "Czech Republic",
+  DK = "Denmark",     EE = "Estonia",      FI = "Finland",
+  FR = "France",      DE = "Germany",      EL = "Greece",
+  HU = "Hungary",     IE = "Ireland",      IT = "Italy",
+  LV = "Latvia",      LT = "Lithuania",    LU = "Luxembourg",
+  MT = "Malta",       NL = "Netherlands",  PL = "Poland",
+  PT = "Portugal",    RO = "Romania",      SK = "Slovakia",
+  SI = "Slovenia",    ES = "Spain",        SE = "Sweden"
 )
 
-savings_clean <- savings_clean %>%
+combined <- combined %>%
   mutate(
     region = country_names[as.character(geo)],
-    period = case_when(
+    region_group = case_when(
+      geo %in% c("AT", "BE", "DE", "FR", "IE", "LU", "NL") ~ "Western Europe",
+      geo %in% c("DK", "FI", "SE")                          ~ "Northern Europe",
+      geo %in% c("CY", "EL", "ES", "IT", "MT", "PT")        ~ "Southern Europe",
+      geo %in% c("BG", "CZ", "EE", "HR", "HU", "LV",
+                 "LT", "PL", "RO", "SI", "SK")               ~ "Central/Eastern Europe"
+    ),
+    covid_phase = case_when(
+      year <= 2019 ~ "Pre-COVID",
+      year == 2020 ~ "COVID shock",
+      year >= 2021 ~ "Recovery / inflation period"
+    ),
+    covid_phase = factor(covid_phase, levels = c(
+      "Pre-COVID",
+      "COVID shock",
+      "Recovery / inflation period"
+    )),
+    map_period = case_when(
       year == 2019 ~ "Pre-COVID (2019)",
       year == 2020 ~ "COVID shock (2020)",
       year == 2021 ~ "Post-COVID (2021)",
       year == 2022 ~ "Post-COVID (2022)"
     ),
-    period = factor(period, levels = c(
+    map_period = factor(map_period, levels = c(
       "Pre-COVID (2019)",
       "COVID shock (2020)",
       "Post-COVID (2021)",
       "Post-COVID (2022)"
     ))
   ) %>%
-  drop_na(region)
+  drop_na(region, region_group)
+```
+
+```{r gen_var2}
+baseline_2019 <- combined %>%
+  filter(year == 2019) %>%
+  select(geo, saving_rate_2019 = saving_rate)
+
+combined <- combined %>%
+  left_join(baseline_2019, by = "geo") %>%
+  mutate(change_from_2019 = saving_rate - saving_rate_2019)
+
+savings_clean <- combined
 ```
 
 ## 3.3 Visualize temporal variation
 
 ```{r temporal_plot}
-eu_mean <- dat %>%
-  filter(
-    na_item == "SRG_S14",
-    sector  == "S14",
-    unit    == "PC"
-  ) %>%
-  mutate(year = as.integer(format(TIME_PERIOD, "%Y"))) %>%
-  filter(year %in% c(2019, 2020, 2021, 2022)) %>%
-  drop_na(values) %>%
+eu_mean <- combined %>%
   group_by(year) %>%
-  summarise(mean_saving_rate = mean(values))
+  summarise(
+    mean_saving_rate    = mean(saving_rate,    na.rm = TRUE),
+    mean_inflation_rate = mean(inflation_rate, na.rm = TRUE),
+    n_countries         = n_distinct(geo),
+    .groups = "drop"
+  )
 
 ggplot(eu_mean, aes(x = year, y = mean_saving_rate)) +
   geom_line(color = "#2C5F8A", linewidth = 1) +
@@ -162,28 +256,35 @@ ggplot(eu_mean, aes(x = year, y = mean_saving_rate)) +
            label = "COVID-19 (2020)", color = "red",
            size = 3.2, hjust = 0) +
   labs(
-    title    = "EU Mean Household Saving Rate (2019-2022)",
+    title    = "EU27 Mean Household Saving Rate (2016-2022)",
     subtitle = "Source: Eurostat (nasa_10_ki)",
     x        = "Year",
-    y        = "Mean saving rate (%)"
+    y        = "Mean saving rate (%)",
+    caption  = "Note: Unweighted mean across EU27 countries with available data."
   ) +
   theme_classic(base_size = 12) +
   theme(
     plot.title    = element_text(face = "bold", size = 13),
-    plot.subtitle = element_text(color = "grey40", size = 10)
+    plot.subtitle = element_text(color = "grey40", size = 10),
+    plot.caption  = element_text(color = "grey50", size = 8, hjust = 0)
   ) +
-  scale_x_continuous(breaks = c(2019, 2020, 2021, 2022))
+  scale_x_continuous(breaks = 2016:2022)
 ```
 
-#write here about temporal variation: the EU mean saving rate spiked sharply in 2020 as COVID lockdowns suppressed consumption, then gradually declined as economies reopened and inflation eroded disposable income xyz
+#write here about temporal variation: the EU27 mean saving rate spiked sharply in 2020 as COVID lockdowns suppressed consumption, then gradually declined as economies reopened and inflation eroded disposable income xyz
 
 ## 3.4 Visualize spatial variation
 
 ```{r visualise_map, fig.width=14, fig.height=10}
 europe_map <- map_data("world")
 
-map_joined <- left_join(europe_map, savings_clean, by = "region") %>%
-  filter(!is.na(period))
+unmatched <- combined %>%
+  distinct(region) %>%
+  anti_join(europe_map %>% distinct(region), by = "region")
+unmatched
+
+map_joined <- left_join(europe_map, combined, by = "region") %>%
+  filter(!is.na(map_period))
 
 ggplot(map_joined, aes(x = long, y = lat, group = group, fill = saving_rate)) +
   geom_polygon(color = "white", linewidth = 0.2) +
@@ -192,47 +293,142 @@ ggplot(map_joined, aes(x = long, y = lat, group = group, fill = saving_rate)) +
     low      = "darkred",
     mid      = "yellow",
     high     = "darkgreen",
-    midpoint = 10,
+    midpoint = median(combined$saving_rate, na.rm = TRUE),
     na.value = "grey90",
     name     = "Saving rate (%)"
   ) +
-  facet_wrap(~ period, ncol = 2, drop = TRUE) +
+  facet_wrap(~ map_period, ncol = 2, drop = TRUE) +
   labs(
-    title    = "Gross Household Saving Rate across Europe (2019-2022)",
+    title    = "Gross Household Saving Rate across EU27 (2019-2022)",
     subtitle = "Source: Eurostat (nasa_10_ki) | Grey = no data available",
-    x = NULL, y = NULL
+    x = NULL, y = NULL,
+    caption  = "Saving rate = gross household saving as % of disposable income. Midpoint set at EU27 median."
   ) +
   theme_void() +
   theme(
     plot.title       = element_text(face = "bold", size = 14),
     plot.subtitle    = element_text(color = "grey40", size = 11),
+    plot.caption     = element_text(color = "grey50", size = 8, hjust = 0),
     strip.text       = element_text(face = "bold", size = 12),
     legend.position  = "bottom",
-    legend.key.width = unit(2, "cm")
+    legend.key.width = grid::unit(2, "cm")
   )
 ```
 
-#write here about spatial variation: in 2020 the map turns greener across all countries as lockdowns forced saving; by 2022 eastern countries turn red as inflation eroded household income xyz
+#write here about spatial variation: in 2020 the map turns greener across all countries as lockdowns forced saving; by 2022 central and eastern countries turn red as inflation eroded household income xyz
 
 ## 3.5 Visualize sub-population variation
 
-#write here about sub-population variation xyz
-
-## 3.6 Event analysis
-
-#write here about event analysis xyz
-
-#write here about event analysis xyz
+```{r visualise_subpopulations}
+combined %>%
+  ggplot(aes(x = covid_phase, y = saving_rate, fill = region_group)) +
+  geom_boxplot(alpha = 0.7) +
+  labs(
+    title    = "Saving Rate by Region Group and COVID Phase (EU27, 2016-2022)",
+    subtitle = "Source: Eurostat (nasa_10_ki)",
+    x        = "COVID phase",
+    y        = "Gross saving rate (%)",
+    fill     = "Region group",
+    caption  = "Groups are broad geographical categories and do not imply causal explanations."
+  ) +
+  theme_classic(base_size = 12) +
+  theme(
+    plot.title      = element_text(face = "bold", size = 13),
+    plot.subtitle   = element_text(color = "grey40", size = 10),
+    plot.caption    = element_text(color = "grey50", size = 8, hjust = 0),
+    axis.text.x     = element_text(angle = 20, hjust = 1),
+    legend.position = "bottom"
+  )
 ```
-#write here about spatial variation: in 2020 the whole map turns greener as lockdowns forced saving across all countries; by 2022 eastern countries turn red as inflation eroded household income xyz
 
-## 3.5 Visualize sub-population variation
-
-#write here about sub-population variation xyz
+#write here about sub-population variation: western and northern Europe consistently save more than southern and central/eastern Europe; the COVID shock boosted saving across all groups in 2020 but recovery has been uneven xyz
 
 ## 3.6 Event analysis
 
-#write here about event analysis xyz
+```{r analysis}
+combined %>%
+  ggplot(aes(x = covid_phase, y = saving_rate, fill = covid_phase)) +
+  geom_boxplot(alpha = 0.7) +
+  scale_fill_manual(
+    values = c(
+      "Pre-COVID"                   = "#2C5F8A",
+      "COVID shock"                 = "#C0392B",
+      "Recovery / inflation period" = "#E07B39"
+    ),
+    guide = "none"
+  ) +
+  labs(
+    title    = "Household Saving Rate around the COVID-19 Shock (EU27, 2016-2022)",
+    subtitle = "Source: Eurostat (nasa_10_ki)",
+    x        = "Period",
+    y        = "Gross saving rate (%)",
+    caption  = "This plot shows association only; it does not prove COVID caused the observed changes."
+  ) +
+  theme_classic(base_size = 12) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 13),
+    plot.subtitle = element_text(color = "grey40", size = 10),
+    plot.caption  = element_text(color = "grey50", size = 8, hjust = 0)
+  )
+```
+
+```{r change_from_2019_plot}
+combined %>%
+  filter(year == 2020) %>%
+  ggplot(aes(x = reorder(region, change_from_2019),
+             y = change_from_2019)) +
+  geom_col(fill = "#2C5F8A") +
+  coord_flip() +
+  labs(
+    title    = "Change in Household Saving Rate from 2019 to 2020 (EU27)",
+    subtitle = "Source: Eurostat (nasa_10_ki)",
+    x        = "Country",
+    y        = "Change from 2019 (percentage points)",
+    caption  = "Positive values indicate a higher saving rate in 2020 compared with 2019."
+  ) +
+  theme_classic(base_size = 12) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 13),
+    plot.subtitle = element_text(color = "grey40", size = 10),
+    plot.caption  = element_text(color = "grey50", size = 8, hjust = 0)
+  )
+```
+
+```{r inflation_saving_scatter}
+combined %>%
+  filter(!is.na(inflation_rate)) %>%
+  ggplot(aes(x = inflation_rate, y = saving_rate, color = covid_phase)) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title    = "Inflation vs Household Saving Rate (EU27, 2016-2022)",
+    subtitle = "Source: Eurostat (nasa_10_ki and prc_hicp_ainr)",
+    x        = "Inflation rate (%)",
+    y        = "Gross saving rate (%)",
+    color    = "Period",
+    caption  = "This visualisation shows correlation only, not causality."
+  ) +
+  theme_classic(base_size = 12) +
+  theme(
+    plot.title      = element_text(face = "bold", size = 13),
+    plot.subtitle   = element_text(color = "grey40", size = 10),
+    plot.caption    = element_text(color = "grey50", size = 8, hjust = 0),
+    legend.position = "bottom"
+  )
+```
+
+```{r correlation_check}
+combined %>%
+  filter(!is.na(inflation_rate)) %>%
+  group_by(covid_phase) %>%
+  summarise(
+    correlation = round(cor(inflation_rate, saving_rate), 2),
+    n           = n(),
+    .groups = "drop"
+  )
+```
+
+#write here about event analysis: saving rates jumped sharply in 2020 during the COVID shock, remained elevated in early recovery, then declined as the 2022 inflation surge eroded disposable income; use the correlation table output above to state whether the relationship between inflation and saving is positive or negative per phase, and note this is correlation not causation xyz balls
+
 
 ## 4.1 Discuss your findings
 
@@ -240,7 +436,7 @@ ggplot(map_joined, aes(x = long, y = lat, group = group, fill = saving_rate)) +
 
 ## 5.1 Github repository link
 
-Provide the link to your PUBLIC repository here: ...
+Provide the link to your PUBLIC repository here: https://github.com/OmarZakk/nieuw_PFE
 
 ## 5.2 Reference list
 
