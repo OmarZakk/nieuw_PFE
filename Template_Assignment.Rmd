@@ -112,18 +112,6 @@ dataset_summary
 
 ## 3.1 Data cleaning
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-```{r data_cleaning}
-savings_clean <- dat%>%
-  filter(
-   na_item == "SRG_S14",
-    sector  == "S14",
-    unit    == "PC"
-   )%>%
-  mutate(year = as.integer(format(TIME_PERIOD, "%Y"))) %>%
-  filter(year %in% c(2019, 2020, 2021, 2022)) %>%
-=======
 ```{r data_cleaning_savings}
 eu27 <- c(
   "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR",
@@ -135,19 +123,6 @@ years_used <- 2016:2022
 
 savings_clean <- dat_savings %>%
   filter(
-=======
-```{r data_cleaning_savings}
-eu27 <- c(
-  "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR",
-  "DE", "EL", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL",
-  "PL", "PT", "RO", "SK", "SI", "ES", "SE"
-)
-
-years_used <- 2016:2022
-
-savings_clean <- dat_savings %>%
-  filter(
->>>>>>> b62ff297222185e7bc4e016fd486e3fee4b2a663
     na_item == "SRG_S14_S15",
     sector  == "S14_S15",
     unit    == "PC",
@@ -155,10 +130,6 @@ savings_clean <- dat_savings %>%
   ) %>%
   mutate(year = as.integer(TIME_PERIOD)) %>%
   filter(year %in% years_used) %>%
-<<<<<<< HEAD
->>>>>>> b62ff297222185e7bc4e016fd486e3fee4b2a663
-=======
->>>>>>> b62ff297222185e7bc4e016fd486e3fee4b2a663
   select(geo, year, saving_rate = values) %>%
   drop_na(saving_rate)
 ```
