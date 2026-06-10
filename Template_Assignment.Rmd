@@ -1,9 +1,9 @@
 ---
 title: "Template"
 <<<<<<< HEAD
-author: "Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (student number), Andrea Tzima or Xhima,Raluca Naumcef, kyle"
+author: "Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (2888419), Andrea Tzima or Xhima,Raluca Naumcef, Kyle van Emmerik (2897218)"
 =======
-author: "Omar Zakkouralashy (2889420), Anna Mishmish-Olaru (2881939), Abhigyan Hazarika (student number), Andrea Tzima or Xhima (2885530),Raluca Naumcef, kyle"
+author: "Omar Zakkouralashy (2889420), Anna Mishmish-Olaru (2881939), Abhigyan Hazarika (2888419), Andrea Tzima or Xhima (2885530),Raluca Naumcef, Kyle van Emmerik (2897218)"
 >>>>>>> d0097343dd07037992a3f4c54a811f9a9756b238
 date: "`r Sys.Date()`"
 output: pdf_document
@@ -39,6 +39,7 @@ TG 5 - G 1
 
 Tutorial teacher: Simon 
 
+Simon Loop
 Simon Loop
 
 # Part 1 - Identify a Social Problem
@@ -414,7 +415,7 @@ combined %>%
 
 ## 5.1 Github repository link
 
-Provide the link to your PUBLIC repository here: ...
+Provide the link to your PUBLIC repository here: https://github.com/OmarZakk/nieuw_PFE
 
 ## 5.2 Reference list
 
