@@ -406,7 +406,7 @@ combined %>%
   )
 ```
 
-#write here about event analysis: saving rates jumped sharply in 2020 during the COVID shock, remained elevated in early recovery, then declined as the 2022 inflation surge eroded disposable income; use the correlation table output above to state whether the relationship between inflation and saving is positive or negative per phase, and note this is correlation not causation xyz
+#write here about event analysis: saving rates jumped sharply in 2020 during the COVID shock, remained elevated in early recovery, then declined as the 2022 inflation surge eroded disposable income; use the correlation table output above to state whether the relationship between inflation and saving is positive or negative per phase, and note this is correlation not causation xyz balls
 
 
 ## 4.1 Discuss your findings
