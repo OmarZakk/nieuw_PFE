@@ -58,16 +58,13 @@ Simon Loop
 Simon Loop
 
 # Part 1 - Identify a Social Problem
+Aside from being a world wide health crisis, the Covid-19 pandemic, simultaneously, limited individual spending and generated a sense of financial insecurity among all classes. Through a survey on individuals in eight countries across the world, Deloitte concluded that, while prior to the pandemic a large portion of income surplus went into consumption for most participants, attitudes have now shifted towards dedicating that surplus to savings and investments.
+The restrictions imposed by governments during lockdown limited spending opportunities, such as traveling and other non-essentials, which paired with government subsidies in many countries (Deloitte, 2022), increased savings. Additionally, the pandemic brought a sense of economic uncertainty regarding employment and future economic and health stability, making individuals crave solidity, safety, and reassurance, reflected onto their growing savings (Deloitte, 2022). 
+We see this represented quite well in countries like the Netherlands and Germany, experiencing two of the highest household savings even after the lockdown, 24% and 23.4% respectively (Eurostat), because of great government support causing consumption to fall faster than income. 
+On the other hand, countries like Romania faced a decrease in savings after the pandemic, due to fewer financial resources and rising living costs, also reflected in the country’s economic status . In these countries savings were predominantly used to cope with the post-Covid inflation period (Belbe et al, 2024)
+Thus, observing household savings prior, during, and after the pandemic, provides insights into the issue of financial vulnerability as a result of the pandemic, as well as inequality between European countries. The issue remains relevant today, because the change in consumption mindsets, due to Covid, seems persistent even well beyond the recovery phase and into present times. 
 
 
-
-## 1.1 Describe the Social Problem
-
-Include the following:
-
--   Why is this relevant? [@smith2020]
-
--   ...
 # Part 2 - Data Sourcing
 
 ## 2.1 Load in the data
