@@ -97,11 +97,21 @@ dataset_summary <- data.frame(
 dataset_summary
 ```
 
-#write here about metadata: both datasets come from Eurostat; saving rate is sourced from national accounts (ESA 2010) and measures gross household saving as a share of disposable income; inflation comes from HICP price-index data and measures annual average price change across consumer goods and services xyz
+Two datasets are used in this analysis, both sourced from Eurostat (the statistical office of the European Union) and downloaded in June 2026.
+
+The HICP – Inflation Rate dataset (code: tec00118, last updated 20/05/2026) has been computed using the Eurostat dataset prc_hicp_ainr. It reports the annual average rate of change in consumer prices across all HICP categories, covering EU averages and individual EU member states. The HICP is a standardized measure of consumer price inflation in Europe ensuring consistency and comparability of data across participating countries. The data runs annually from 2014 to 2025, however for the sake of our research we use data from 2016 to 2022.
+
+The household saving rate dataset (code: tec00131, last updated 04/06/2026) is compiled from annual national accounts data (source: nasa_10_ki) and covers individual EU participating countries as well as EU and euro area aggregates, running annually from 2014 to 2025 however again the data used is from 2016 to 2022. It measures the share of gross disposable income that households set aside rather than spend, expressed as a percentage. The sector includes both households and non-profit institutions serving households.
+
 
 ## 2.3 Describe the type of variables included
 
-#write here: saving rate and inflation are ratio-level numeric variables; country is nominal; year is interval; covid_phase and region_group are ordinal/categorical; saving rate data comes from administrative national accounts; inflation comes from HICP price index data, not surveys xyz
+The key numeric variables are the saving rate and inflation rate. Both are numeric variables expressed as percentages, allowing direct comparison across countries and time periods
+
+Country (GEO) is a nominal variable, identifying each EU participating country and averages across Europe. Time is annual in both datasets, ranging from 2014 to 2025, and is treated as an interval variable where the distance between years is equal and meaningful. Later variables created in 3.2 are categorical. 
+
+Both variables come from administrative and index-based sources rather than surveys, which limits typical survey sampling error but means values depend on the quality and timeliness of national accounts reporting by each member state.
+
 
 ---
 
