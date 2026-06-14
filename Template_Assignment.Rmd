@@ -457,8 +457,18 @@ In summary we can conclude that the savings rates before COVID have been relativ
 
 ## 5.1 Github repository link
 
-Provide the link to your PUBLIC repository here: https://github.com/OmarZakk/nieuw_PFE
+The link to our public repo is: <https://github.com/OmarZakk/nieuw_PFE>
 
 ## 5.2 Reference list
 
-Use APA referencing throughout your document.
+- Belbe, Ș., Moldovan, D., Andrieș, A. M., Otto, P., & Mare, C. (2024). Evaluation of the space-time effects of Covid-19 on household loans and savings in Romania - A spatial panel data approach at county level. Emerging Markets Review, 101209.
+
+- De Nederlandsche Bank. (2026, March 24). War in the Middle East: the impact on the Dutch economy. Retrieved from De Nederlandsche Bank: <https://www.dnb.nl/en/general-news/news-2026/war-in-the-middle-east-the-impact-on-the-dutch-economy/>
+
+- Deloitte. (2022). An impact of COVID-19 on savings: A rising sense of financial insecurity. Retrieved from Deloitte: <https://www.deloitte.com/content/dam/assets-shared/legacy/docs/analysis/2022/gx-retirement-and-savings-report-updated.pdf>
+
+- Eurostat. (2026, May 5). Harmonised index of consumer prices (HICP) - ECOICOP ver.2 - indices and rates of change, annual data. Retrieved from Eurostat: <https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_ainr/default/table?lang=en>
+
+- Eurostat. (2026, June 4). Key indicators - annual data. Retrieved from Eurostat: <https://ec.europa.eu/eurostat/databrowser/view/NASA_10_KI__custom_21822977/default/table>
+
+- Eurostat. (n.d). Evolution of saving- and debt rates. Retrieved from Eurostat: <https://ec.europa.eu/eurostat/cache/digpub/european_economy/bloc-2d.html?lang=en>
