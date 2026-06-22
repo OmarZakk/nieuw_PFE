@@ -405,25 +405,68 @@ combined %>%
   )
 ```
 
-```{r inflation_saving_scatter}
-combined %>%
-  filter(!is.na(inflation_rate)) %>%
-  ggplot(aes(x = inflation_rate, y = saving_rate, color = covid_phase)) +
-  geom_point(alpha = 0.7, size = 2) +
-  labs(
-    title    = "Inflation vs Household Saving Rate (EU27, 2016-2022)",
-    subtitle = "Source: Eurostat (nasa_10_ki and prc_hicp_ainr)",
-    x        = "Inflation rate (%)",
-    y        = "Gross saving rate (%)",
-    color    = "Period",
-    caption  = "This visualisation shows correlation only, not causality."
+```{r Temporal Analysis}
+# Build the filtered dataset once, reuse everywhere
+plot_data <- combined %>%
+  filter(!is.na(inflation_rate), !is.na(saving_rate)) %>%
+  arrange(year)
+
+
+# Scale inflation DOWN relative to saving rate, computed on the same filtered data
+scale_factor <- max(plot_data$saving_rate, na.rm = TRUE) /
+                max(plot_data$inflation_rate, na.rm = TRUE)
+
+# To scale the inflation axis down (make the line sit lower / less dominant),
+# shrink it further with a damping factor < 1
+damp <- 10
+scale_factor <- scale_factor * damp
+
+plot_data %>%
+  ggplot(aes(x = year)) +
+
+  # Saving rate bars (left axis)
+  geom_col(aes(y = saving_rate, fill = covid_phase),
+           alpha = 0.6, width = 0.6) +
+
+  # Inflation rate line (right axis — scaled down to sit below saving_rate range)
+  geom_line(aes(y = inflation_rate * scale_factor, group = 1),
+            color = "#e63946", linewidth = 1.2) +
+  geom_point(aes(y = inflation_rate * scale_factor),
+             color = "#e63946", size = 3) +
+
+  # Dual axis: right side shows true inflation values, rescaled back
+  scale_y_continuous(
+    name = "Gross Saving Rate (%)",
+    sec.axis = sec_axis(~ . / scale_factor,
+                        name = "Inflation Rate (%)")
   ) +
+  scale_x_continuous(breaks = seq(min(plot_data$year),
+                                  max(plot_data$year), by = 1)) +
+  scale_fill_manual(
+    values = c("Pre-COVID"  = "#457b9d",
+               "COVID"      = "#e9c46a",
+               "Post-COVID" = "#2a9d8f"),
+    drop = FALSE
+  ) +
+
+  labs(
+    title    = "Inflation vs Household Saving Rate Over Time (EU27, 2016–2022)",
+    subtitle = "Source: Eurostat (nasa_10_ki and prc_hicp_ainr)",
+    x        = "Year",
+    fill     = "Period",
+    caption  = "Bars = saving rate (left axis) | Line = inflation rate (right axis). Correlation only, not causality."
+  ) +
+
   theme_classic(base_size = 12) +
   theme(
-    plot.title      = element_text(face = "bold", size = 13),
-    plot.subtitle   = element_text(color = "grey40", size = 10),
-    plot.caption    = element_text(color = "grey50", size = 8, hjust = 0),
-    legend.position = "bottom"
+    plot.title       = element_text(face = "bold", size = 13),
+    plot.subtitle    = element_text(color = "grey40", size = 10),
+    plot.caption     = element_text(color = "grey50", size = 8, hjust = 0),
+    axis.title.y.left  = element_text(color = "#457b9d", face = "bold"),
+    axis.title.y.right = element_text(color = "#e63946", face = "bold"),
+    axis.text.y.left   = element_text(color = "#457b9d"),
+    axis.text.y.right  = element_text(color = "#e63946"),
+    legend.position  = "bottom"
   )
 ```
 
