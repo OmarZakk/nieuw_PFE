@@ -5,25 +5,23 @@ date: "`r Sys.Date()`"
 output: pdf_document
 bibliography: references.bib
 csl: apa.csl
+header-includes:
+  - \usepackage{float}
 
 ---
 
 # Set-up your environment
-
-```{r package_install, include=FALSE}
-install.packages("tidyverse")
-install.packages("yaml")
-install.packages("rmarkdown")
-install.packages("maps")
-install.packages("eurostat")
-install.packages("grid")
-```
 
 ```{r packages, include=FALSE}
 library(tidyverse)
 library(maps)
 library(eurostat)
 library(grid)
+
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.pos = "H")
+header-includes:
+  - \usepackage{float}
+  - \usepackage[margin=0.75in]{geometry}
 ```
 
 # Title Page
@@ -105,7 +103,7 @@ dataset_summary <- data.frame(
                  "National average, not household-specific")
 )
 
-dataset_summary
+knitr::kable(dataset_summary)
 ```
 
 Two datasets are used in this analysis, both sourced from Eurostat (the statistical office of the European Union) and downloaded in June 2026.
@@ -246,7 +244,7 @@ savings_clean <- combined
 
 ## 3.3 Visualize temporal variation
 
-```{r temporal_plot}
+```{r temporal_plot, echo=FALSE}
 eu_mean <- combined %>%
   group_by(year) %>%
   summarise(
@@ -295,7 +293,7 @@ unmatched <- combined %>%
 unmatched
 ```
 
-```{r visualise_map, fig.width=14, fig.height=10}
+```{r visualise_map, fig.width=14, fig.height=10, echo=FALSE}
 map_joined <- left_join(europe_map, combined, by = "region") %>%
   filter(!is.na(map_period))
 
@@ -332,7 +330,7 @@ The spatial variation is also quite telling: For most of the EU27 countries, the
 
 ## 3.5 Visualize sub-population variation
 
-```{r visualise_subpopulations}
+```{r visualise_subpopulations, echo=FALSE}
 combined %>%
   ggplot(aes(x = covid_phase, y = saving_rate, fill = region_group)) +
   geom_boxplot(alpha = 0.7) +
@@ -358,7 +356,7 @@ The difference in sub-populations is a structural divide that persists over time
 
 ## 3.6 Event analysis
 
-```{r analysis}
+```{r analysis, echo=FALSE}
 combined %>%
   ggplot(aes(x = covid_phase, y = saving_rate, fill = covid_phase)) +
   geom_boxplot(alpha = 0.7) +
@@ -385,7 +383,7 @@ combined %>%
   )
 ```
 
-```{r change_from_2019_plot}
+```{r change_from_2019_plot, echo=FALSE}
 combined %>%
   filter(year == 2020) %>%
   ggplot(aes(x = reorder(region, change_from_2019),
@@ -407,40 +405,44 @@ combined %>%
   )
 ```
 
-```{r temporal_analysis_dual_axis}
-# Build the filtered dataset once, reuse everywhere
-plot_data <- combined %>%
-  filter(!is.na(inflation_rate), !is.na(saving_rate)) %>%
-  arrange(year)
+```{r temporal_analysis_dual_axis, echo=FALSE}
+# Build the EU27-aggregated dataset, reuse the same one created in 3.3
+plot_data <- eu_mean %>%
+  mutate(
+    covid_phase = case_when(
+      year <= 2019 ~ "Pre-COVID",
+      year == 2020 ~ "COVID shock",
+      year >= 2021 ~ "Recovery / inflation period"
+    ),
+    covid_phase = factor(covid_phase, levels = c(
+      "Pre-COVID",
+      "COVID shock",
+      "Recovery / inflation period"
+    ))
+  )
 
-
-# Scale inflation DOWN relative to saving rate, computed on the same filtered data
-scale_factor <- max(plot_data$saving_rate, na.rm = TRUE) /
-                max(plot_data$inflation_rate, na.rm = TRUE)
-
-# To scale the inflation axis down (make the line sit lower / less dominant),
-# shrink it further with a damping factor < 1
-damp <- 10
-scale_factor <- scale_factor * damp
+# Scale inflation DOWN relative to saving rate, computed on the same EU27 means
+scale_factor <- max(plot_data$mean_saving_rate, na.rm = TRUE) /
+                max(plot_data$mean_inflation_rate, na.rm = TRUE)
 
 plot_data %>%
   ggplot(aes(x = year)) +
 
-  # Saving rate bars (left axis)
-  geom_col(aes(y = saving_rate, fill = covid_phase),
+  # Mean saving rate bars (left axis)
+  geom_col(aes(y = mean_saving_rate, fill = covid_phase),
            alpha = 0.6, width = 0.6) +
 
-  # Inflation rate line (right axis — scaled down to sit below saving_rate range)
-  geom_line(aes(y = inflation_rate * scale_factor, group = 1),
+  # Mean inflation rate line (right axis — scaled down to sit below saving_rate range)
+  geom_line(aes(y = mean_inflation_rate * scale_factor, group = 1),
             color = "#e63946", linewidth = 1.2) +
-  geom_point(aes(y = inflation_rate * scale_factor),
+  geom_point(aes(y = mean_inflation_rate * scale_factor),
              color = "#e63946", size = 3) +
 
   # Dual axis: right side shows true inflation values, rescaled back
   scale_y_continuous(
-    name = "Gross Saving Rate (%)",
+    name = "Mean Gross Saving Rate (%)",
     sec.axis = sec_axis(~ . / scale_factor,
-                        name = "Inflation Rate (%)")
+                        name = "Mean Inflation Rate (%)")
   ) +
   scale_x_continuous(breaks = seq(min(plot_data$year),
                                   max(plot_data$year), by = 1)) +
@@ -458,7 +460,7 @@ plot_data %>%
     subtitle = "Source: Eurostat (nasa_10_ki and prc_hicp_ainr)",
     x        = "Year",
     fill     = "Period",
-    caption  = "Bars = saving rate (left axis) | Line = inflation rate (right axis). Correlation only, not causality."
+    caption  = "Bars = mean saving rate (left axis) | Line = mean inflation rate (right axis). Correlation only, not causality."
   ) +
 
   theme_classic(base_size = 12) +
