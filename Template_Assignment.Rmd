@@ -1,13 +1,15 @@
 ---
-title: "The effect of COVID on household savings in the European Union - A social problem."
-author: "Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (2888419), Andrea Tzima or Xhima (2885530), Raluca Naumcef(2888853), Kyle van Emmerik (2897218)"
+title: "The effect of COVID on household savings in the European Union - A social
+  problem."
+author: Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (2888419),
+  Andrea Tzima or Xhima (2885530), Raluca Naumcef(2888853), Kyle van Emmerik (2897218)
 date: "`r Sys.Date()`"
-output: pdf_document
+output:
+  pdf_document: default
+  word_document: default
 bibliography: references.bib
 csl: apa.csl
-header-includes:
-  - \usepackage{float}
-
+header-includes: \usepackage{float}
 ---
 
 # Set-up your environment
@@ -490,7 +492,7 @@ It can be observed from event analysis that there exists a definite three phase 
 
 
 ## 4.1 Discuss your findings
-The mean savings rate from 2016-2022 have not been constant in the slightest. We can dissect this data into three segments for a better analysis; pre-covid, 2016-2019, the savings rate has been relatively constant, reaching a peak of almost 8% during 2017, but having balanced out fluctuations. During covid crisis, 2020, the savings have skyrocketed to approximately 16%. After the covid crisis,2021-2022, we recognize a decrease in the savings rate. This decrease is abrupt and very high compared to any other fluctuation during the pre-covid periods. 
+The mean savings rate from 2016-2022 have not been constant in the slightest. We can dissect this data into three segments; pre-covid, 2016-2019, the savings rate has been relatively constant, reaching a peak of almost 8% during 2017, but having balanced out fluctuations. During covid crisis, 2020, the savings have skyrocketed to approximately 16%. After the covid crisis,2021-2022, we recognize a decrease in the savings rate. This decrease is abrupt and very high compared to any other fluctuation during the pre-covid periods. 
 It is reasonable to conclude that giving the lockdown policies, households have been restricted from consuming and the uncertainty of individuals regarding their career and their income safety has raised the savings rate by an unexpected amount. 
 The impact was not identical across all European countries. The aftermath of post-covid can be also segmented by the economic status of countries, as we know that not every country has the same level of economic development. Germany and the Netherlands have maintained a higher savings rate while eastern European countries like Romania, Bulgaria and Greece show a lower average savings rate, with Romania even going into the negatives. This concluded that not only shocks can influence the economic behaviour of households, but even existing and prolonged economic differences such as income, financial structure, consumption patterns inflation rates and even corruption of political systems.
 The strength in our analytical approach is our combined savings rate dataset against the inflation. We have chosen this with regards to a clearer and more enunciated data-analysis. The variables inflation and savings rate allow us to assess if periods of higher inflation have occurred alongside periods of higher savings rates. The limitation in the dataset being the measure of inflation as the HICP average, which does not represent exact inflation experienced by households.
