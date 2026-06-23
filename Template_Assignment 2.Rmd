@@ -1,13 +1,8 @@
 ---
-<<<<<<< HEAD
 title: "The effect of COVID on household savings in the European Union - A social
   problem."
 author: Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (2888419),
   Andrea Tzima or Xhima (2885530), Raluca Naumcef(2888853), Kyle van Emmerik (2897218)
-=======
-title: "The effect of COVID on household savings in the European Union - A social problem."
-author: "Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (2888419), Andrea Tzima or Xhima (2885530), Raluca Naumcef (2888853), Kyle van Emmerik (2897218)"
->>>>>>> 3d3b96b8bd2f28585b2e1ca9e3561a4199228390
 date: "`r Sys.Date()`"
 output:
   pdf_document: default
@@ -46,11 +41,44 @@ TG 5 - G 1
 Tutorial teacher: Simon Loop
 
 # Part 1 - Identify a Social Problem
-Aside from being a worldwide health crisis, the COVID-19 pandemic, simultaneously, limited individual spending and generated a sense of financial insecurity among all classes. Through a survey on individuals in eight countries across the world, Deloitte concluded that, while prior to the pandemic a large portion of income surplus went into consumption for most participants, attitudes have now shifted towards dedicating that surplus to savings and investments [@Deloitte2022]. Thus, this research focuses on how COVID affected household savings across the European Union.
+Aside from being a worldwide health crisis, the Covid-19 pandemic, simultaneously, limited individual spending and generated a sense of financial insecurity among all classes. Through a survey on individuals in eight countries across the world, Deloitte concluded that, while prior to the pandemic a large portion of income surplus went into consumption for most participants, attitudes have now shifted towards dedicating that surplus to savings and investments [@Deloitte2022].
 The restrictions imposed by governments during lockdown limited spending opportunities, such as travelling and other non-essentials, which paired with government subsidies in many countries [@Deloitte2022], increased savings. Additionally, the pandemic brought a sense of economic uncertainty regarding employment and future economic and health stability, makes individuals crave financial security, reflected in their growing savings [@Deloitte2022]. 
 We see this represented quite well in countries like the Netherlands and Germany, experiencing two of the highest household savings even after the lockdown, 24% and 23.4% respectively [@EurostatGraphnodate], because of great government support causing consumption to fall faster than income. 
 On the other hand, countries like Romania faced a decrease in savings after the pandemic, due to fewer financial resources and rising living costs, also reflected in the country's economic status . In these countries savings were predominantly used to cope with the post-Covid inflation period [@BELBE2024101209].
-Observations on household savings prior, during, and after the pandemic, provides insights into the social issue of financial vulnerability as a result of the pandemic, as well as inequality between European countries. The issue remains relevant today, because the change in consumption mindsets, due to COVID, seems persistent even well beyond the recovery phase and into present times, with a more recent example of De Nederlandsche Bank (DNB). In March they published an analysis of the effects of energy price shocks as a result of the war in the Middle East and Iran's blockade of the Strait of Hormuz on the Dutch economy [@DNB2026]. Due to the well documented household savings behavior during COVID-19, we are able to construct a framework for what such cirsis mean for the European economies and what to expect in the future.
+Observing household savings prior, during, and after the pandemic, provides insights into the issue of financial vulnerability as a result of the pandemic, as well as inequality between European countries. The issue remains relevant today, because the change in consumption mindsets, due to Covid, seems persistent even well beyond the recovery phase and into present times.
+This research is still very much relevant today. In March 2026, De Nederlandsche Bank (DNB) published an analysis of the effects of energy price shocks as a result of the war in the Middle East and Iran's blockade of the Strait of Hormuz on the Dutch economy [@DNB2026]. Such shocks are particularly relevant for the Netherlands as a trade-dependent country with high exposure to global commodity markets. DNB presented three scenarios:
+```{r dnb_table, echo=FALSE}
+dnb_scenarios <- data.frame(
+  Scenario = c("Update", "Adverse", "Severe"),
+  Energy_assumption = c(
+    "Oil and gas rise, then fall back during 2026",
+    "Oil and gas rise further, remain elevated Q2/Q3 2026",
+    "Very high energy prices, lasting longer"
+  ),
+  Effect_on_inflation = c(
+    "+0.5 pp in 2026 and 2027",
+    "Around +1 pp in 2026 and 2027",
+    "+1.6 pp in 2026; +2.8 pp in 2027"
+  ),
+  Effect_on_GDP_growth = c(
+    "Slight negative impact",
+    "Around -0.5 pp in 2026",
+    "Around -0.8 pp in 2026 and 2027"
+  )
+)
+
+knitr::kable(
+  dnb_scenarios,
+  col.names = c("Scenario", "Energy assumption", "Effect on Dutch inflation", "Effect on Dutch GDP growth"),
+  caption = "Source: De Nederlandsche Bank (2026). War in the Middle East: the impact on the Dutch economy."
+)
+```
+
+
+
+The findings pose an urgent question: what is the impact of large-scale financial instability driven by energy shocks, inflation and eroding household purchasing power on consumer behaviour across Europe? Fortunately, we have a recent crisis of comparable magnitude to draw upon. The COVID-19 pandemic caused a similar sharp macroeconomic shock and its effects on household saving behavior across Europe are well documented. Examining how European households responded – how savings rates changed, how regional disparities developed and how post-crisis inflation subsequently eroded those savings allows us to construct a framework for understanding what crises of this nature mean for European economies, and what we can reasonably expect in the future.
+
+
 
 # Part 2 - Data Sourcing
 
@@ -86,9 +114,10 @@ knitr::kable(dataset_summary)
 
 Two datasets are used in this analysis, both sourced from Eurostat (the statistical office of the European Union) and downloaded in June 2026.
 
-The HICP – Inflation Rate dataset (code: tec00118, last updated 20/05/2026) has been computed using the Eurostat dataset prc_hicp_ainr. It reports the annual average rate of change in consumer prices across all HICP categories, covering EU averages and individual EU member states. The HICP is a standardized measure of consumer price inflation in Europe ensuring consistency and comparability of data across participating countries. The data runs annually from 2014 to 2025, however for the sake of our research we use data from 2016 to 2022 [@EurostatHICP2026].
+The HICP – Inflation Rate dataset (code: tec00118, last updated 20/05/2026) has been computed using the Eurostat dataset prc_hicp_ainr. It reports the annual average rate of change in consumer prices across all HICP categories, covering EU averages and individual EU member states. The HICP is a standardized measure of consumer price inflation in Europe ensuring consistency and comparability of data across participating countries. The data runs annually from 2014 to 2025, however for the sake of our research we use data from 2016 to 2022.
 
-The household saving rate dataset (code: tec00131, last updated 04/06/2026) is compiled from annual national accounts data (source: nasa_10_ki) and covers individual EU participating countries as well as EU and euro area aggregates, running annually from 2014 to 2025 however again the data used is from 2016 to 2022. It measures the share of gross disposable income that households set aside rather than spend, expressed as a percentage. The sector includes both households and non-profit institutions serving households [@EurostatSavingRate2026].
+The household saving rate dataset (code: tec00131, last updated 04/06/2026) is compiled from annual national accounts data (source: nasa_10_ki) and covers individual EU participating countries as well as EU and euro area aggregates, running annually from 2014 to 2025 however again the data used is from 2016 to 2022. It measures the share of gross disposable income that households set aside rather than spend, expressed as a percentage. The sector includes both households and non-profit institutions serving households.
+
 
 ## 2.3 Describe the type of variables included
 
