@@ -1,27 +1,15 @@
 ---
-<<<<<<< HEAD
-title: "The effect of COVID on household savings in the European Union - A social
-  problem."
-author: Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (2888419),
-  Andrea Tzima or Xhima (2885530), Raluca Naumcef(2888853), Kyle van Emmerik (2897218)
-=======
 title: "The effect of COVID on household savings in the European Union - A social problem."
 author: "Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (2888419), Andrea Tzima or Xhima (2885530), Raluca Naumcef (2888853), Kyle van Emmerik (2897218)"
->>>>>>> 3d3b96b8bd2f28585b2e1ca9e3561a4199228390
 date: "`r Sys.Date()`"
 output:
   pdf_document: default
   word_document: default
 bibliography: references.bib
 csl: apa.csl
-<<<<<<< HEAD
-header-includes: \usepackage{float}
-=======
+geometry: margin=0.75in
 header-includes:
   - \usepackage{float}
-  - \usepackage[margin=0.75in]{geometry}
-
->>>>>>> 7a3c1e36156406b8cce350abb1a65a7e1949af51
 ---
 
 # Set-up your environment
