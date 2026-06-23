@@ -5,25 +5,23 @@ date: "`r Sys.Date()`"
 output: pdf_document
 bibliography: references.bib
 csl: apa.csl
+header-includes:
+  - \usepackage{float}
 
 ---
 
 # Set-up your environment
-
-```{r package_install, include=FALSE}
-install.packages("tidyverse")
-install.packages("yaml")
-install.packages("rmarkdown")
-install.packages("maps")
-install.packages("eurostat")
-install.packages("grid")
-```
 
 ```{r packages, include=FALSE}
 library(tidyverse)
 library(maps)
 library(eurostat)
 library(grid)
+
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.pos = "H")
+header-includes:
+  - \usepackage{float}
+  - \usepackage[margin=0.75in]{geometry}
 ```
 
 # Title Page
@@ -39,11 +37,10 @@ Tutorial teacher: Simon Loop
 Aside from being a worldwide health crisis, the Covid-19 pandemic, simultaneously, limited individual spending and generated a sense of financial insecurity among all classes. Through a survey on individuals in eight countries across the world, Deloitte concluded that, while prior to the pandemic a large portion of income surplus went into consumption for most participants, attitudes have now shifted towards dedicating that surplus to savings and investments [@Deloitte2022].
 The restrictions imposed by governments during lockdown limited spending opportunities, such as travelling and other non-essentials, which paired with government subsidies in many countries [@Deloitte2022], increased savings. Additionally, the pandemic brought a sense of economic uncertainty regarding employment and future economic and health stability, makes individuals crave financial security, reflected in their growing savings [@Deloitte2022]. 
 We see this represented quite well in countries like the Netherlands and Germany, experiencing two of the highest household savings even after the lockdown, 24% and 23.4% respectively [@EurostatGraphnodate], because of great government support causing consumption to fall faster than income. 
-On the other hand, countries like Romania faced a decrease in savings after the pandemic, due to fewer financial resources and rising living costs, also reflected in the country’s economic status . In these countries savings were predominantly used to cope with the post-Covid inflation period [@BELBE2024101209].
-Observing household savings prior, during, and after the pandemic, provides insights into the issue of financial vulnerability as a result of the pandemic, as well as inequality between European countries. The issue remains relevant today, because the change in consumption mindsets, due to Covid, seems persistent even well beyond the recovery phase and into present times. 
-
-This research is still very much relevant today. In March 2026, De Nederlandsche Bank (DNB) published an analysis of the effects of energy price shocks as a result of the war in the Middle East and Iran’s blockade of the Strait of Hormuz on the Dutch economy [@DNB2026]. Such shocks are particularly relevant for the Netherlands as a trade-dependent country with high exposure to global commodity markets. DNB presented three scenarios:
-```{r}
+On the other hand, countries like Romania faced a decrease in savings after the pandemic, due to fewer financial resources and rising living costs, also reflected in the country's economic status . In these countries savings were predominantly used to cope with the post-Covid inflation period [@BELBE2024101209].
+Observing household savings prior, during, and after the pandemic, provides insights into the issue of financial vulnerability as a result of the pandemic, as well as inequality between European countries. The issue remains relevant today, because the change in consumption mindsets, due to Covid, seems persistent even well beyond the recovery phase and into present times.
+This research is still very much relevant today. In March 2026, De Nederlandsche Bank (DNB) published an analysis of the effects of energy price shocks as a result of the war in the Middle East and Iran's blockade of the Strait of Hormuz on the Dutch economy [@DNB2026]. Such shocks are particularly relevant for the Netherlands as a trade-dependent country with high exposure to global commodity markets. DNB presented three scenarios:
+```{r dnb_table, echo=FALSE}
 dnb_scenarios <- data.frame(
   Scenario = c("Update", "Adverse", "Severe"),
   Energy_assumption = c(
@@ -80,7 +77,7 @@ The findings pose an urgent question: what is the impact of large-scale financia
 
 ## 2.1 Load in the data
 
-```{r loading_data}
+```{r loading_data, echo=FALSE}
 library(maps)
 library(eurostat)
 library(grid)
@@ -91,7 +88,7 @@ dat_inflation <- get_eurostat("prc_hicp_ainr", time_format = "num", cache = TRUE
 
 ## 2.2 Provide a short summary of the dataset(s)
 
-```{r summary}
+```{r summary, echo=FALSE}
 dataset_summary <- data.frame(
   Dataset    = c("nasa_10_ki", "prc_hicp_ainr"),
   Source     = c("Eurostat", "Eurostat"),
@@ -105,7 +102,7 @@ dataset_summary <- data.frame(
                  "National average, not household-specific")
 )
 
-dataset_summary
+knitr::kable(dataset_summary)
 ```
 
 Two datasets are used in this analysis, both sourced from Eurostat (the statistical office of the European Union) and downloaded in June 2026.
@@ -130,7 +127,7 @@ Both variables come from administrative and index-based sources rather than surv
 
 ## 3.1 Data cleaning
 
-```{r data_cleaning_savings}
+```{r data_cleaning_savings, echo=FALSE}
 eu27 <- c(
   "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR",
   "DE", "EL", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL",
@@ -152,7 +149,7 @@ savings_clean <- dat_savings %>%
   drop_na(saving_rate)
 ```
 
-```{r data_cleaning_inflation}
+```{r data_cleaning_inflation, echo=FALSE}
 inflation_clean <- dat_inflation %>%
   filter(
     coicop18 == "AP",
@@ -165,11 +162,11 @@ inflation_clean <- dat_inflation %>%
   drop_na(inflation_rate)
 ```
 
-```{r data_cleaning_merge}
+```{r data_cleaning_merge, echo=FALSE}
 combined <- left_join(savings_clean, inflation_clean, by = c("geo", "year"))
 ```
 
-```{r data_cleaning_check}
+```{r data_cleaning_check, echo=FALSE}
 combined %>%
   summarise(
     countries         = n_distinct(geo),
@@ -183,7 +180,7 @@ combined %>%
 
 ## 3.2 Generate necessary variables
 
-```{r gen_var1}
+```{r gen_var1, echo=FALSE}
 country_names <- c(
   AT = "Austria",     BE = "Belgium",      BG = "Bulgaria",
   HR = "Croatia",     CY = "Cyprus",       CZ = "Czech Republic",
@@ -232,7 +229,7 @@ combined <- combined %>%
   drop_na(region, region_group)
 ```
 
-```{r gen_var2}
+```{r gen_var2, echo=FALSE}
 baseline_2019 <- combined %>%
   filter(year == 2019) %>%
   select(geo, saving_rate_2019 = saving_rate)
@@ -246,7 +243,7 @@ savings_clean <- combined
 
 ## 3.3 Visualize temporal variation
 
-```{r temporal_plot}
+```{r temporal_plot, echo=FALSE}
 eu_mean <- combined %>%
   group_by(year) %>%
   summarise(
@@ -286,14 +283,16 @@ The saving behaviour of households has changed dramatically. In 2020, the averag
 
 ## 3.4 Visualize spatial variation
 
-```{r visualise_map, fig.width=14, fig.height=10}
+```{r unmatched_check, include=FALSE}
 europe_map <- map_data("world")
 
 unmatched <- combined %>%
   distinct(region) %>%
   anti_join(europe_map %>% distinct(region), by = "region")
 unmatched
+```
 
+```{r visualise_map, fig.width=14, fig.height=10, echo=FALSE}
 map_joined <- left_join(europe_map, combined, by = "region") %>%
   filter(!is.na(map_period))
 
@@ -330,7 +329,7 @@ The spatial variation is also quite telling: For most of the EU27 countries, the
 
 ## 3.5 Visualize sub-population variation
 
-```{r visualise_subpopulations}
+```{r visualise_subpopulations, echo=FALSE}
 combined %>%
   ggplot(aes(x = covid_phase, y = saving_rate, fill = region_group)) +
   geom_boxplot(alpha = 0.7) +
@@ -356,7 +355,7 @@ The difference in sub-populations is a structural divide that persists over time
 
 ## 3.6 Event analysis
 
-```{r analysis}
+```{r analysis, echo=FALSE}
 combined %>%
   ggplot(aes(x = covid_phase, y = saving_rate, fill = covid_phase)) +
   geom_boxplot(alpha = 0.7) +
@@ -383,7 +382,7 @@ combined %>%
   )
 ```
 
-```{r change_from_2019_plot}
+```{r change_from_2019_plot, echo=FALSE}
 combined %>%
   filter(year == 2020) %>%
   ggplot(aes(x = reorder(region, change_from_2019),
@@ -405,29 +404,78 @@ combined %>%
   )
 ```
 
-```{r inflation_saving_scatter}
-combined %>%
-  filter(!is.na(inflation_rate)) %>%
-  ggplot(aes(x = inflation_rate, y = saving_rate, color = covid_phase)) +
-  geom_point(alpha = 0.7, size = 2) +
-  labs(
-    title    = "Inflation vs Household Saving Rate (EU27, 2016-2022)",
-    subtitle = "Source: Eurostat (nasa_10_ki and prc_hicp_ainr)",
-    x        = "Inflation rate (%)",
-    y        = "Gross saving rate (%)",
-    color    = "Period",
-    caption  = "This visualisation shows correlation only, not causality."
+```{r temporal_analysis_dual_axis, echo=FALSE}
+# Build the EU27-aggregated dataset, reuse the same one created in 3.3
+plot_data <- eu_mean %>%
+  mutate(
+    covid_phase = case_when(
+      year <= 2019 ~ "Pre-COVID",
+      year == 2020 ~ "COVID shock",
+      year >= 2021 ~ "Recovery / inflation period"
+    ),
+    covid_phase = factor(covid_phase, levels = c(
+      "Pre-COVID",
+      "COVID shock",
+      "Recovery / inflation period"
+    ))
+  )
+
+# Scale inflation DOWN relative to saving rate, computed on the same EU27 means
+scale_factor <- max(plot_data$mean_saving_rate, na.rm = TRUE) /
+                max(plot_data$mean_inflation_rate, na.rm = TRUE)
+
+plot_data %>%
+  ggplot(aes(x = year)) +
+
+  # Mean saving rate bars (left axis)
+  geom_col(aes(y = mean_saving_rate, fill = covid_phase),
+           alpha = 0.6, width = 0.6) +
+
+  # Mean inflation rate line (right axis — scaled down to sit below saving_rate range)
+  geom_line(aes(y = mean_inflation_rate * scale_factor, group = 1),
+            color = "#e63946", linewidth = 1.2) +
+  geom_point(aes(y = mean_inflation_rate * scale_factor),
+             color = "#e63946", size = 3) +
+
+  # Dual axis: right side shows true inflation values, rescaled back
+  scale_y_continuous(
+    name = "Mean Gross Saving Rate (%)",
+    sec.axis = sec_axis(~ . / scale_factor,
+                        name = "Mean Inflation Rate (%)")
   ) +
+  scale_x_continuous(breaks = seq(min(plot_data$year),
+                                  max(plot_data$year), by = 1)) +
+  scale_fill_manual(
+    values = c(
+      "Pre-COVID"                   = "#457b9d",
+      "COVID shock"                 = "#e9c46a",
+      "Recovery / inflation period" = "#2a9d8f"
+    ),
+    drop = FALSE
+  ) +
+
+  labs(
+    title    = "Inflation vs Household Saving Rate Over Time (EU27, 2016–2022)",
+    subtitle = "Source: Eurostat (nasa_10_ki and prc_hicp_ainr)",
+    x        = "Year",
+    fill     = "Period",
+    caption  = "Bars = mean saving rate (left axis) | Line = mean inflation rate (right axis). Correlation only, not causality."
+  ) +
+
   theme_classic(base_size = 12) +
   theme(
-    plot.title      = element_text(face = "bold", size = 13),
-    plot.subtitle   = element_text(color = "grey40", size = 10),
-    plot.caption    = element_text(color = "grey50", size = 8, hjust = 0),
-    legend.position = "bottom"
+    plot.title       = element_text(face = "bold", size = 13),
+    plot.subtitle    = element_text(color = "grey40", size = 10),
+    plot.caption     = element_text(color = "grey50", size = 8, hjust = 0),
+    axis.title.y.left  = element_text(color = "#457b9d", face = "bold"),
+    axis.title.y.right = element_text(color = "#e63946", face = "bold"),
+    axis.text.y.left   = element_text(color = "#457b9d"),
+    axis.text.y.right  = element_text(color = "#e63946"),
+    legend.position  = "bottom"
   )
 ```
 
-```{r correlation_check}
+```{r correlation_check, echo=FALSE}
 combined %>%
   filter(!is.na(inflation_rate)) %>%
   group_by(covid_phase) %>%
@@ -438,7 +486,7 @@ combined %>%
   )
 ```
 
-#It can be observed from event analysis that there exists a definite three phase dynamics in the relationship between inflation and saving. The first phase is represented by the occurrence of the COVID shock in 2020 where consumption became difficult for households leading to a situation where people were forced to save. This led to an increase in saving rates while in the second phase, savings declined along with real disposable income due to increased inflation in 2022. Here is how it appears in the correlation table. In the COVID shock phase, there is a positive correlation between inflation and saving which implies that both variables are positively correlated in the given phase. In the inflation phase, the relationship between inflation and saving is negative which implies that saving is negatively correlated with inflation.
+It can be observed from event analysis that there exists a definite three phase dynamics in the relationship between inflation and saving. The first phase is represented by the occurrence of the COVID shock in 2020 where consumption became difficult for households leading to a situation where people were forced to save. This led to an increase in saving rates while in the second phase, savings declined along with real disposable income due to increased inflation in 2022. Here is how it appears in the correlation table. In the COVID shock phase, there is a positive correlation between inflation and saving which implies that both variables are positively correlated in the given phase. In the inflation phase, the relationship between inflation and saving is negative which implies that saving is negatively correlated with inflation.
 
 
 ## 4.1 Discuss your findings
@@ -446,7 +494,7 @@ The mean savings rate from 2016-2022 have not been constant in the slightest. We
 It is reasonable to conclude that giving the lockdown policies, households have been restricted from consuming and the uncertainty of individuals regarding their career and their income safety has raised the savings rate by an unexpected amount. 
 The impact was not identical across all European countries. The aftermath of post-covid can be also segmented by the economic status of countries, as we know that not every country has the same level of economic development. Germany and the Netherlands have maintained a higher savings rate while eastern European countries like Romania, Bulgaria and Greece show a lower average savings rate, with Romania even going into the negatives. This concluded that not only shocks can influence the economic behaviour of households, but even existing and prolonged economic differences such as income, financial structure, consumption patterns inflation rates and even corruption of political systems.
 The strength in our analytical approach is our combined savings rate dataset against the inflation. We have chosen this with regards to a clearer and more enunciated data-analysis. The variables inflation and savings rate allow us to assess if periods of higher inflation have occurred alongside periods of higher savings rates. The limitation in the dataset being the measure of inflation as the HICP average, which does not represent exact inflation experienced by households.
-Economic conditions have changed significantly post-covid, with inflation increasing across the entire Eurozone. The recovery period inflation rate rising from relatively low levels as of 2019 and much higher levels in 2022. (see img.7). Compared against the savings rate, these have begun to skyrocket as of 2020. This suggests that facing an increase in the living costs has influenced households’ financial decisions; e.g., higher prices and reduced purchasing power have made households very uncertain of the future economy hence the higher savings rate. These suggestions are consistent with most research done by the European union suggesting a strong and main factor being involuntary savings and uncertainty in the employment levels.
+Economic conditions have changed significantly post-covid, with inflation increasing across the entire Eurozone. The recovery period inflation rate rising from relatively low levels as of 2019 and much higher levels in 2022. (see img.7). Compared against the savings rate, these have begun to skyrocket as of 2020. This suggests that facing an increase in the living costs has influenced households' financial decisions; e.g., higher prices and reduced purchasing power have made households very uncertain of the future economy hence the higher savings rate. These suggestions are consistent with most research done by the European union suggesting a strong and main factor being involuntary savings and uncertainty in the employment levels.
 The scatter plot comparing inflation and savings rate provides additional insight into this relationship. The relation is not perfect, meaning that higher inflation did not automatically result in lower or higher savings rate in every country, the effect differs depending on national conditions as mentioned in the previous paragraphs.
 Additionally, because both datasets are measured at the national level, the analysis cannot show how different household groups reacted. For example, higher-income households may have been able to continue saving, while lower-income households may have reduced savings due to higher living costs.
 Many datasets only show whether households saved, but our approach considers the wider economic environment in which these decisions were made. By creating variables such as COVID phases and changes from the 2019 baseline, the analysis can identify whether changes were temporary shocks or part of longer-term patterns.
