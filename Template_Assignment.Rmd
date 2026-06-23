@@ -1,6 +1,6 @@
 ---
 title: "The effect of COVID on household savings in the European Union - A social problem."
-author: "Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (2888419), Andrea Tzima or Xhima (2885530), Raluca Naumcef(2888853), Kyle van Emmerik (2897218)"
+author: "Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (2888419), Andrea Tzima or Xhima (2885530), Raluca Naumcef (2888853), Kyle van Emmerik (2897218)"
 date: "`r Sys.Date()`"
 output: pdf_document
 bibliography: references.bib
@@ -73,10 +73,9 @@ knitr::kable(dataset_summary)
 
 Two datasets are used in this analysis, both sourced from Eurostat (the statistical office of the European Union) and downloaded in June 2026.
 
-The HICP – Inflation Rate dataset (code: tec00118, last updated 20/05/2026) has been computed using the Eurostat dataset prc_hicp_ainr. It reports the annual average rate of change in consumer prices across all HICP categories, covering EU averages and individual EU member states. The HICP is a standardized measure of consumer price inflation in Europe ensuring consistency and comparability of data across participating countries. The data runs annually from 2014 to 2025, however for the sake of our research we use data from 2016 to 2022.
+The HICP – Inflation Rate dataset (code: tec00118, last updated 20/05/2026) has been computed using the Eurostat dataset prc_hicp_ainr. It reports the annual average rate of change in consumer prices across all HICP categories, covering EU averages and individual EU member states. The HICP is a standardized measure of consumer price inflation in Europe ensuring consistency and comparability of data across participating countries. The data runs annually from 2014 to 2025, however for the sake of our research we use data from 2016 to 2022 [@EurostatHICP2026].
 
-The household saving rate dataset (code: tec00131, last updated 04/06/2026) is compiled from annual national accounts data (source: nasa_10_ki) and covers individual EU participating countries as well as EU and euro area aggregates, running annually from 2014 to 2025 however again the data used is from 2016 to 2022. It measures the share of gross disposable income that households set aside rather than spend, expressed as a percentage. The sector includes both households and non-profit institutions serving households.
-
+The household saving rate dataset (code: tec00131, last updated 04/06/2026) is compiled from annual national accounts data (source: nasa_10_ki) and covers individual EU participating countries as well as EU and euro area aggregates, running annually from 2014 to 2025 however again the data used is from 2016 to 2022. It measures the share of gross disposable income that households set aside rather than spend, expressed as a percentage. The sector includes both households and non-profit institutions serving households [@EurostatSavingRate2026].
 
 ## 2.3 Describe the type of variables included
 
@@ -474,15 +473,3 @@ In summary we can conclude that the savings rates before COVID have been relativ
 The link to our public repo is: <https://github.com/OmarZakk/nieuw_PFE>
 
 ## 5.2 Reference list
-
-- Belbe, Ș., Moldovan, D., Andrieș, A. M., Otto, P., & Mare, C. (2024). Evaluation of the space-time effects of Covid-19 on household loans and savings in Romania - A spatial panel data approach at county level. Emerging Markets Review, 101209.
-
-- De Nederlandsche Bank. (2026, March 24). War in the Middle East: the impact on the Dutch economy. Retrieved from De Nederlandsche Bank: <https://www.dnb.nl/en/general-news/news-2026/war-in-the-middle-east-the-impact-on-the-dutch-economy/>
-
-- Deloitte. (2022). An impact of COVID-19 on savings: A rising sense of financial insecurity. Retrieved from Deloitte: <https://www.deloitte.com/content/dam/assets-shared/legacy/docs/analysis/2022/gx-retirement-and-savings-report-updated.pdf>
-
-- Eurostat. (2026, May 5). Harmonised index of consumer prices (HICP) - ECOICOP ver.2 - indices and rates of change, annual data. Retrieved from Eurostat: <https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_ainr/default/table?lang=en>
-
-- Eurostat. (2026, June 4). Key indicators - annual data. Retrieved from Eurostat: <https://ec.europa.eu/eurostat/databrowser/view/NASA_10_KI__custom_21822977/default/table>
-
-- Eurostat. (n.d). Evolution of saving- and debt rates. Retrieved from Eurostat: <https://ec.europa.eu/eurostat/cache/digpub/european_economy/bloc-2d.html?lang=en>
