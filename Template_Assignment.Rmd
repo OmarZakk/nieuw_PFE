@@ -1,6 +1,12 @@
 ---
 title: "The effect of COVID on household savings in the European Union - A social problem."
-author: "Omar Zakkouralashy (2889420), Anna Olaru (2881939), Abhigyan Hazarika (2888419), Andrea Tzima or Xhima (2885530), Raluca Naumcef (2888853), Kyle van Emmerik (2897218)"
+author:
+  - Omar Zakkouralashy (2889420)
+  - Anna Olaru (2881939)
+  - Abhigyan Hazarika (2888419)
+  - Andrea Tzima or Xhima (2885530)
+  - Raluca Naumcef (2888853)
+  - Kyle van Emmerik (2897218)
 date: "`r Sys.Date()`"
 output:
   pdf_document: default
