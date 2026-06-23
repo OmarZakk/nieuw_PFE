@@ -9,7 +9,14 @@ output:
   word_document: default
 bibliography: references.bib
 csl: apa.csl
+<<<<<<< HEAD
 header-includes: \usepackage{float}
+=======
+header-includes:
+  - \usepackage{float}
+  - \usepackage[margin=0.75in]{geometry}
+
+>>>>>>> 7a3c1e36156406b8cce350abb1a65a7e1949af51
 ---
 
 # Set-up your environment
@@ -21,9 +28,7 @@ library(eurostat)
 library(grid)
 
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.pos = "H")
-header-includes:
-  - \usepackage{float}
-  - \usepackage[margin=0.75in]{geometry}
+
 ```
 
 # Title Page
