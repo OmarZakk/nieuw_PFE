@@ -7,6 +7,7 @@ bibliography: references.bib
 csl: apa.csl
 header-includes:
   - \usepackage{float}
+  - \usepackage[margin=0.75in]{geometry}
 
 ---
 
@@ -19,9 +20,7 @@ library(eurostat)
 library(grid)
 
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.pos = "H")
-header-includes:
-  - \usepackage{float}
-  - \usepackage[margin=0.75in]{geometry}
+
 ```
 
 # Title Page
